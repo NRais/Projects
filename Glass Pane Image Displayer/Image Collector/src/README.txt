@@ -16,6 +16,8 @@ This application, its code, images, and all its components are copyrighted by Na
 
 --- INSTALLATION ---
 
-Download Java .jar file and run on JVM. If you don't have a JVM installed it can be downloaded for free from Oracle https://java.com/en/download/
+
+
+Download Java .jar file from Sourceforge.com https://sourceforge.net/projects/glass-pane-image-collector/files/ and run on JVM. If you don't have a JVM installed it can be downloaded for free from Oracle https://java.com/en/download/
 
 In future native packages and installers will be made available.
