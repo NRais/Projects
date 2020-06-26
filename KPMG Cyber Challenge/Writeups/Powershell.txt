@@ -1,0 +1,68 @@
+--------------------------------
+
+POWER SHELL
+
+--------------------------------
+
+0)
+
+- "icacls <file> /grant "Users":F" give permissions
+- "more <file>" read file
+
+1) 
+
+- Power shell commands alias normal linux commands
+- "get-ChildItem" alias for ls and dir
+
+- "get-Command" lists all commands (gcm alias)
+- "get-Process" lists all running processes
+- "set-Location blah"
+- "get-ChildItem -Recurse -filter "*.png" | Group-Object -Property Directory" searches all subflders and counts the number of files
+- "get-ChildItem -Force" show hidden files
+
+2)
+
+- "get-Content README.txt" gets the content of a file
+- "set-Content -Value "Hello World" -path text.txt"
+- "get-Content names.txt | Select -index 32"
+- "get-Content names.txt -TotalCount 32 | Select-Object -Last 1"
+
+3)
+
+- "remove-item something.txt"
+- "Get-Date | Select-Object -Property * | ConvertTo-Json | Set-Content ipaddresses.json"
+- "Get-Content ipaddresses.txt | ConvertTo-Json | Set-Content ipaddresses.json"
+
+- "Import-CSV something.csv"
+- "Get-Date | Select-Object -Property * | ConvertTo-Csv | Set-Content savedate.csv"
+- "Get-Host | ConvertTo-Html | Set-Content html.html"
+
+4)
+
+- "Get-Module | % {Get-Command -Module $_.name} | measure"
+- "Get-Module -ListAvailable"
+- "Import-Module -Name Posh-SYSLOG"
+
+5) 
+
+- "Get-EventLog -list"
+- "
+Get-EventLog -After $Begin -Before $End
+$Begin = Get-Date -Date '5/2/2018 08:00:00' `
+$End = Get-Date -Date '5/2/2018 17:00:00' `
+
+- "Get-EventLog -LogName System -After 05/02/2018 -Before 05/03/2018 | Group-Object number"
+- "Get-EventLog -LogName System -Newest 10 | ConvertTo-CSV"
+
+
+------------------------
+
+Cyber Kill Chain
+
+------------------------
+
+- "Get-History"
+- "(Get-PSReadlineOption).HistorySavePath"
+
+
+

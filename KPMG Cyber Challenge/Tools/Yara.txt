@@ -1,0 +1,115 @@
+
+-------------------------
+
+          YARA
+		  
+	MALWARE SIGNATURES
+
+-------------------------
+
+
+Goal: Malware episode 2
+
+
+1) Yara Lab 1
+
+- "strings <filename>" return ascii strings in filename
+- "xxd <filename>" hex of a file
+- "cat <filename>" return file
+- "cat <filename> | grep <string>"
+- "strings <file> | grep -i <strings>" case insensitive
+- "grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" find IP addresses
+
+- tried things like "strings file2 | grep 'classPK'" and ascertained that all malware contained "adwind" and "classPK"
+
+2) Yara Lab 2
+
+- "grep -w <string> <filename>" where -w means a whole word not a substring
+- "-i" ignore case
+- "-r" search subdirectories
+- "-v" inverse search (for things that do not include)
+- "-A 3" print 3 lines after "-B 3" print 3 lines before "-C 2" prints 2 before and after
+
+- Searched for the following strings in both files:
+sqlite3
+client.exe
+design991.bplaced.net/rat/@1906dark1996coder
+WExtract.exe
+
+3) Yara Lab 3
+
+4) Yara Lab 4
+
+- "strings -n 5 <file>" to set min length
+
+5) Yara Lab 5
+
+Yara Rule:
+
+rule ExampleRule {
+
+	strings:
+		$text = "CMemoryExcecute"
+		$header = "MZ"
+		
+	condition:
+		$header at 0 and $text
+
+}
+
+6) Yara Lab 6
+
+rule ExampleRule {
+
+	strings:
+		$text = "CMemoryExcecute"
+		$header = "MZ"
+		
+	condition:
+		$header and #text == 1
+
+}
+
+
+7) Yara Lab 7
+
+import "pe"
+
+rule ExampleRule {
+
+	strings:
+		$str = "a574"
+	
+	condition:
+		pe.number_of_sections == 1 and pe.exports("CPLApplet") and pe.DLL and $str
+
+
+}
+
+https://yara.readthedocs.io/en/v3.1.0/modules.html
+
+11) Yara Lab Tuning Rules
+
+rule ExampleRule {
+
+	strings:
+		$str = ""
+		
+	condition:
+		all of them
+
+}
+
+rule ExampleRule {
+
+	strings:
+		$str = ""
+		$a = "mbla"
+		$MZ = "MZ"
+		
+	condition:
+		$MZ at 0 and $a and (2 of them)
+
+}
+
+

