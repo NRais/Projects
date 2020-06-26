@@ -7,14 +7,14 @@
 
 Challenges included use of common security tools such as Burpsuite, Yara, Wirseshark, ZAP, Snort, Msfvenom and dozens more. 
 
-![User Profile](/images/Clipboard04.jpg)
+![Labs](https://github.com/NRais/Projects/blob/master/KPMG%20Cyber%20Challenge/Images/Clipboard04.jpg)
 
 ## ASSIGNED OBJECTIVES
 
 - 62% Completed
 - 165 Labs competed
 
-![User Profile](/images/Clipboard01.jpg)
+![User Profile](https://github.com/NRais/Projects/blob/master/KPMG%20Cyber%20Challenge/Images/Clipboard01.jpg)
 
 - Level 1
    - [ ] OSINT
@@ -38,12 +38,12 @@ Challenges included use of common security tools such as Burpsuite, Yara, Wirses
 
 ### Rank #23 overall
 
-![Rank](/images/Clipboard02.jpg)
+![Rank](https://github.com/NRais/Projects/blob/master/KPMG%20Cyber%20Challenge/Images/Clipboard02.jpg)
 
 ### Team Rank #5
 
 Our team consisted of 4 students from a variety of backgrounds and levels of knowledge. We worked together to complete challenges and on Friday evening passed 30,000 points pulling ahead of KPMG.
 
-![Team Rank](/images/Clipboard03.jpg)
+![Team Rank](https://github.com/NRais/Projects/blob/master/KPMG%20Cyber%20Challenge/Images/Clipboard03.jpg)
 
 The KPMG Cyber Challenge was a fantastic oppportunity to pit my Cyber skills against a whole variety of known and new challenges and grow in a number of ways.
