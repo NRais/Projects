@@ -13,6 +13,8 @@ Projects I have been working on recently, find executable downloads at <a href=n
 ## Advanced Business Timer
 <img src="https://github.com/NRais/Projects/blob/master/Advanced%20Business%20Timer/header.jpg" width="300" height="60">
 
+## The Takeover Game
+<img src="https://github.com/NRais/Projects/blob/master/The%20Takeover%20Game/Takeover/src/resources/menu/mainLabel.png" width="300" height="70">
 
 
 ------
