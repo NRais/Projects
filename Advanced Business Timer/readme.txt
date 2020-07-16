@@ -1,10 +1,12 @@
 ----------- README -------------
 
-This is the Advanced Business Timer application by Nathan Software. This application is copyrighted under the Creative Commons Attribution 4.0 license. The Desktop Stopwatch Timer from Nathan Software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the CC BY 4.0 license for more details. https://creativecommons.org/licenses/by/4.0/
+This is the Advanced Business Timer application by Nathan Software. This application is copyrighted under the Creative Commons Attribution 4.0 license. The Advanced Business Timer from Nathan Software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the CC BY 4.0 license for more details. https://creativecommons.org/licenses/by/4.0/
 
 **** Version 3.0 updates the UI, fixes bugs, and improves functionality
 
 Installation:
+
+- Download the Java .jar application AdvancedBusinessTimer-Jar-3.0.jar.
 
 (If you do not have a JRE installed)
 
