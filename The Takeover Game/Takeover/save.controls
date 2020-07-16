@@ -1,0 +1,44 @@
+1,1,Up,Up
+1,1,Down,Down
+1,1,Left,Left
+1,1,Right,Right
+1,1,Fire,Enter
+1,2,Up,NumPad-8
+1,2,Down,NumPad-5
+1,2,Left,NumPad-4
+1,2,Right,NumPad-6
+1,2,Fire,NumPad-0
+1,0,Toggle,Period
+2,1,Up,W
+2,1,Down,S
+2,1,Left,A
+2,1,Right,D
+2,1,Fire,C
+2,2,Up,I
+2,2,Down,K
+2,2,Left,J
+2,2,Right,L
+2,2,Fire,Alt
+2,0,Toggle,Space
+3,1,Up,UP  AXES  2-Axis8-Button  
+3,1,Down,DOWN  AXES  2-Axis8-Button  
+3,1,Left, LEFT AXES  2-Axis8-Button  
+3,1,Right, RIGHT AXES  2-Axis8-Button  
+3,1,Fire, J 4 2-Axis8-Button  
+3,2,Up, J 3 2-Axis8-Button  
+3,2,Down, J 0 2-Axis8-Button  
+3,2,Left, J 2 2-Axis8-Button  
+3,2,Right, J 1 2-Axis8-Button  
+3,2,Fire, J 5 2-Axis8-Button  
+3,0,Toggle, J 6 2-Axis8-Button  
+4,1,Up,UP  AXES  Logitech WingMan Gamepad Extreme (USB)
+4,1,Down,DOWN  AXES  Logitech WingMan Gamepad Extreme (USB)
+4,1,Left, LEFT AXES  Logitech WingMan Gamepad Extreme (USB)
+4,1,Right, RIGHT AXES  Logitech WingMan Gamepad Extreme (USB)
+4,1,Fire, J 6 Logitech WingMan Gamepad Extreme (USB)
+4,2,Up, J 4 Logitech WingMan Gamepad Extreme (USB)
+4,2,Down, J 1 Logitech WingMan Gamepad Extreme (USB)
+4,2,Left, J 0 Logitech WingMan Gamepad Extreme (USB)
+4,2,Right, J 2 Logitech WingMan Gamepad Extreme (USB)
+4,2,Fire, J 7 Logitech WingMan Gamepad Extreme (USB)
+4,0,Toggle, J 9 Logitech WingMan Gamepad Extreme (USB)
