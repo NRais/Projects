@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.scene.control.TextArea;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,41 +11,26 @@ import java.net.UnknownHostException;
 
 public class SocketClient {
 
-    public void connect(String[] args) {
+    private BufferedReader in;
+    private PrintWriter out;
 
-        if (args.length != 2) {
-            System.err.println(
-                    "Usage: java EchoClient <host name> <port number>");
-            System.exit(1);
-        }
+    public void connect(String hostName, int portNumber, TextArea textField) {
 
         System.out.println("Starting client'");
 
-        String hostName = args[0];
-        int portNumber = Integer.parseInt(args[1]);
+        try {
+            Socket kkSocket = new Socket(hostName, portNumber);
+            out = new PrintWriter(kkSocket.getOutputStream(), true);
+            in = new BufferedReader(
+                    new InputStreamReader(kkSocket.getInputStream()));
 
-        try (
-                Socket kkSocket = new Socket(hostName, portNumber);
-                PrintWriter out = new PrintWriter(kkSocket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(kkSocket.getInputStream()));
-        ) {
-            BufferedReader stdIn =
-                    new BufferedReader(new InputStreamReader(System.in));
-            String fromServer;
-            String fromUser;
+            String inputLine;
 
-            while ((fromServer = in.readLine()) != null) {
-                System.out.println("Server: " + fromServer);
-                if (fromServer.equals("Bye."))
-                    break;
-
-                fromUser = stdIn.readLine();
-                if (fromUser != null) {
-                    //System.out.println("Client: " + fromUser);
-                    out.println(fromUser);
-                }
+            while ((inputLine = in.readLine()) != null) {
+                textField.setText(inputLine);
             }
+
+
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);
             System.exit(1);
@@ -52,5 +39,9 @@ public class SocketClient {
                     hostName);
             System.exit(1);
         }
+    }
+
+    public void send(String send) {
+        out.println(send);
     }
 }

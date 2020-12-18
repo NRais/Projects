@@ -9,6 +9,7 @@
 <?import javafx.scene.text.Font?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ControllerMain">
    <children>
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
@@ -19,13 +20,6 @@
                </image>
             </ImageView>
             <BorderPane prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <center>
-                  <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
-                     <image>
-                        <Image url="@../../../../WEB%20-%20NATHANSOFTWARE/Images/Planet%20Bounce/camps/aperture-2426865_1920.jpg" />
-                     </image>
-                  </ImageView>
-               </center>
                <top>
                   <Label text="WORD STRIKER" textFill="RED" BorderPane.alignment="CENTER">
                      <font>
@@ -33,12 +27,18 @@
                      </font>
                   </Label>
                </top>
-               <bottom>
-                  <Button fx:id="connectButton" onAction="#connect" layoutX="799.0" layoutY="408.0" mnemonicParsing="false" prefHeight="122.0" prefWidth="154.0" text="PLAY">
+               <right>
+                  <TextArea fx:id="textField" prefHeight="200.0" prefWidth="200.0" promptText="Type Anything Here" BorderPane.alignment="CENTER" />
+               </right>
+               <left>
+                  <Button fx:id="connectButton" mnemonicParsing="false" onAction="#connect" prefHeight="122.0" prefWidth="154.0" text="CLIENT" BorderPane.alignment="CENTER">
                      <font>
                         <Font name="Agency FB Bold" size="39.0" />
                      </font>
                   </Button>
+               </left>
+               <bottom>
+                  <Button onAction="#send" mnemonicParsing="false" text="Send Message" BorderPane.alignment="CENTER" />
                </bottom>
             </BorderPane>
          </children>
