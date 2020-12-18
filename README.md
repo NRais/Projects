@@ -18,7 +18,7 @@ Projects I have been working on recently, find executable downloads at <a href=n
 
 
 ## Word Striker
-<img src="https://github.com/NRais/Projects/WordStriker/logo.jpg" width="300" height="70">
+<img src="https://github.com/NRais/Projects/blob/master/WordStriker/logo.jpg" width="300" height="70">
 
 ------
 
