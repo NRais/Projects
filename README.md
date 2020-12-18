@@ -17,6 +17,9 @@ Projects I have been working on recently, find executable downloads at <a href=n
 <img src="https://github.com/NRais/Projects/blob/master/The%20Takeover%20Game/Takeover/src/resources/menu/mainLabel.png" width="300" height="70">
 
 
+## Word Striker
+<img src="https://github.com/NRais/Projects/WordStriker/logo.jpg" width="300" height="70">
+
 ------
 
 (Note: most Nathansoftware.com projects cannot be found in this repository because they are copyrighted under the CC BY-ND license.)
