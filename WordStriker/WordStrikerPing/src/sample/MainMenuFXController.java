@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 
-public class Controller {
+public class MainMenuFXController {
 
     private int count = 0 ;
 
@@ -43,7 +43,7 @@ public class Controller {
             StackPane stackPane = new StackPane();
             stackPane.getChildren().addAll(root);
 
-            Scene scene = new Scene(stackPane, Color.BLACK); // note 300x275 is the small size when not maximized
+            Scene scene = new Scene(stackPane, Color.BLACK);
 
             // Swap screen
             stage.setScene(scene);

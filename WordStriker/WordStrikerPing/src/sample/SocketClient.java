@@ -1,6 +1,17 @@
 package sample;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.geometry.VPos;
+import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,7 +25,7 @@ public class SocketClient {
     private BufferedReader in;
     private PrintWriter out;
 
-    public void connect(String hostName, int portNumber, TextArea textField) {
+    public void connect(String hostName, int portNumber, ConnectionFXController topLevel) {
 
         System.out.println("Starting client'");
 
@@ -27,7 +38,14 @@ public class SocketClient {
             String inputLine;
 
             while ((inputLine = in.readLine()) != null) {
-                textField.setText(inputLine);
+
+                final String toPass = inputLine;
+                // Avoid throwing IllegalStateException by running from a non-JavaFX thread.
+                Platform.runLater(
+                        () -> {
+                            topLevel.printText(toPass);
+                        }
+                );
             }
 
 

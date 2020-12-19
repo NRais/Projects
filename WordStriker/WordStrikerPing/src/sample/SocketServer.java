@@ -1,5 +1,8 @@
 package sample;
 
+import javafx.application.Platform;
+import javafx.scene.control.TextField;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,42 +12,44 @@ import java.net.Socket;
 
 public class SocketServer {
 
-    public void connect(String[] args) {
-        if (args.length != 1) {
-            System.err.println("Usage: java KnockKnockServer <port number>");
-            System.exit(1);
-        }
+    private BufferedReader in;
+    private PrintWriter out;
 
-        int portNumber = Integer.parseInt(args[0]);
+    public void connect(int portNumber, ConnectionFXController topLevel) {
+
 
         System.out.println("Starting server'");
 
-        try (
-                ServerSocket serverSocket = new ServerSocket(portNumber);
-                Socket clientSocket = serverSocket.accept();
-                PrintWriter out =
-                        new PrintWriter(clientSocket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(clientSocket.getInputStream()));
-        ) {
+        try {
+            ServerSocket serverSocket = new ServerSocket(portNumber);
+            Socket clientSocket = serverSocket.accept();
+            out = new PrintWriter(clientSocket.getOutputStream(), true);
+            in = new BufferedReader(
+                    new InputStreamReader(clientSocket.getInputStream()));
 
-            String inputLine, outputLine;
+            out.println("--- Conversation Begins ---");
 
-            // Initiate conversation with client
-            CommunicateProtocol kkp = new CommunicateProtocol();
-            outputLine = kkp.processInput(null);
-            out.println(outputLine);
+            String inputLine;
 
             while ((inputLine = in.readLine()) != null) {
-                outputLine = kkp.processInput(inputLine);
-                out.println(outputLine);
-                if (outputLine.equals("Bye."))
-                    break;
+
+                final String toPass = inputLine;
+                // Avoid throwing IllegalStateException by running from a non-JavaFX thread.
+                Platform.runLater(
+                        () -> {
+                            topLevel.printText(toPass);
+                        }
+                );
             }
+
         } catch (IOException e) {
             System.out.println("Exception caught when trying to listen on port "
                     + portNumber + " or listening for a connection");
             System.out.println(e.getMessage());
         }
+    }
+
+    public void send(String send) {
+        out.println(send);
     }
 }
