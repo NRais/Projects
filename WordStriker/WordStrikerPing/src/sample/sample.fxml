@@ -2,12 +2,14 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.paint.LinearGradient?>
 <?import javafx.scene.paint.Stop?>
 <?import javafx.scene.text.Font?>
@@ -51,16 +53,23 @@
                   </LinearGradient>
                </textFill>
             </Label>
-            <Button fx:id="incrementButton" onAction="#increment" layoutX="469.0" layoutY="408.0" mnemonicParsing="false" prefHeight="122.0" prefWidth="154.0" text="PLAY">
+            <Button fx:id="incrementButton" layoutX="470.0" layoutY="408.0" mnemonicParsing="false" onAction="#increment" prefHeight="122.0" prefWidth="154.0" text="COUNT">
                <font>
                   <Font name="Agency FB Bold" size="39.0" />
                </font>
             </Button>
-            <Button fx:id="switchPaneButton" onAction="#paneswitch" layoutX="799.0" layoutY="408.0" mnemonicParsing="false" prefHeight="122.0" prefWidth="154.0" text="PLAY">
+            <Button fx:id="switchPaneButton" layoutX="470.0" layoutY="533.0" mnemonicParsing="false" onAction="#paneswitch" prefHeight="122.0" prefWidth="154.0" text="PLAY">
                <font>
                   <Font name="Agency FB Bold" size="39.0" />
                </font>
             </Button>
+            <Button fx:id="findButton" layoutX="290.0" layoutY="408.0" mnemonicParsing="false" onAction="#find" prefHeight="122.0" prefWidth="154.0" text="FIND">
+               <font>
+                  <Font name="Agency FB Bold" size="39.0" />
+               </font>
+            </Button>
+            <StackPane fx:id="stackPaneImage" layoutX="725.0" layoutY="79.0" prefHeight="150.0" prefWidth="200.0" />
+            <TextArea fx:id="findTextArea" layoutX="290.0" layoutY="533.0" prefHeight="122.0" prefWidth="154.0" />
          </children>
       </AnchorPane>
    </children>

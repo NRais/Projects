@@ -1,6 +1,6 @@
 package sample;
 
-import javafx.scene.control.TextArea;
+import javafx.application.Platform;
 import javafx.scene.control.TextField;
 
 import java.io.BufferedReader;
@@ -15,7 +15,7 @@ public class SocketServer {
     private BufferedReader in;
     private PrintWriter out;
 
-    public void connect(int portNumber, TextField textField) {
+    public void connect(int portNumber, ConnectionFXController topLevel) {
 
 
         System.out.println("Starting server'");
@@ -32,7 +32,14 @@ public class SocketServer {
             String inputLine;
 
             while ((inputLine = in.readLine()) != null) {
-                textField.setText(inputLine);
+
+                final String toPass = inputLine;
+                // Avoid throwing IllegalStateException by running from a non-JavaFX thread.
+                Platform.runLater(
+                        () -> {
+                            topLevel.printText(toPass);
+                        }
+                );
             }
 
         } catch (IOException e) {
