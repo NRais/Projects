@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -32,8 +33,7 @@ public class ConnectionFXController {
     @FXML
     private Pane transitionPane;
 
-    @FXML
-    private void connect() {
+    public void connect(String server) {
 
         sendButton.setDefaultButton(true);
         sendButton.setOnAction(e -> send());
@@ -41,7 +41,7 @@ public class ConnectionFXController {
         if (CLIENT) {
             sc = new SocketClient();
             // put into a thread so the gui still runs while we are listening
-            Thread one = new Thread(() -> sc.connect("localhost", PORT, this));
+            Thread one = new Thread(() -> sc.connect(server, PORT, this));
 
             one.start();
         } else {

@@ -5,13 +5,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.ComboBox;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Reflection;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -38,7 +36,7 @@ public class MainMenuFXController {
     @FXML
     private Button switchPaneButton;
     @FXML
-    private TextArea findTextArea;
+    private ComboBox comboBox;
 
     public void initialize() {
         // SHAPES AND TEXT SCENE
@@ -64,6 +62,9 @@ public class MainMenuFXController {
         Gui.rotateThis(text);
 
         stackPaneImage.getChildren().addAll(ellipse, text, selectedImage);
+
+        comboBox.getItems().add("localhost");
+        comboBox.getSelectionModel().selectFirst();
     }
 
     @FXML
@@ -85,7 +86,7 @@ public class MainMenuFXController {
             ConnectionFXController controller = new ConnectionFXController();
             loader.setController(controller);
             root = loader.load();
-            controller.connect("localhost"); //AUTOCONNECT
+            controller.connect((String)comboBox.getSelectionModel().getSelectedItem()); //AUTOCONNECT
 
             StackPane stackPane = new StackPane();
             stackPane.getChildren().addAll(root);
@@ -102,6 +103,11 @@ public class MainMenuFXController {
 
     @FXML
     private void find() {
+        // clear and normalize the list
+        comboBox.getItems().clear();
+        comboBox.getItems().add("localhost");
+        comboBox.getSelectionModel().selectFirst(); // local host is selected by default
+
         final byte[] ip;
         try {
             ip = InetAddress.getLocalHost().getAddress();
@@ -118,7 +124,7 @@ public class MainMenuFXController {
                     InetAddress address = InetAddress.getByAddress(ip);
                     String output = address.toString().substring(1);
                     if (address.isReachable(1000)) {
-                        findTextArea.setText(findTextArea.getText() + "\n" + output + " is on the network");
+                        comboBox.getItems().add(output);
                     } else {
                         System.out.println("Not Reachable: "+output);
                     }
