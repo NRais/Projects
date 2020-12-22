@@ -1,10 +1,13 @@
 package sample;
 
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Reflection;
@@ -19,6 +22,7 @@ import javafx.scene.shape.Ellipse;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -37,6 +41,9 @@ public class MainMenuFXController {
     private Button switchPaneButton;
     @FXML
     private ComboBox comboBox;
+
+    @FXML
+    private CheckBox clientCheckBox;
 
     public void initialize() {
         // SHAPES AND TEXT SCENE
@@ -86,7 +93,9 @@ public class MainMenuFXController {
             ConnectionFXController controller = new ConnectionFXController();
             loader.setController(controller);
             root = loader.load();
-            controller.connect((String)comboBox.getSelectionModel().getSelectedItem()); //AUTOCONNECT
+
+            boolean CLIENT = clientCheckBox.isSelected();
+            controller.connect((String)comboBox.getSelectionModel().getSelectedItem(), CLIENT); //AUTOCONNECT
 
             StackPane stackPane = new StackPane();
             stackPane.getChildren().addAll(root);
@@ -96,6 +105,10 @@ public class MainMenuFXController {
             // Swap screen
             stage.setScene(scene);
             stage.setMaximized(true);
+            stage.setOnCloseRequest(t -> {
+                Platform.exit();
+                System.exit(0);
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }

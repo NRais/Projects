@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
@@ -27,24 +28,30 @@ public class ConnectionFXController {
     private TextField textField;
     @FXML
     private Button sendButton;
+    @FXML
+    private Button connectButton;
 
     @FXML
     private Pane root;
     @FXML
     private Pane transitionPane;
 
-    public void connect(String server) {
+    public void connect(String server, Boolean client) {
 
         sendButton.setDefaultButton(true);
         sendButton.setOnAction(e -> send());
 
+        CLIENT = client;
+
         if (CLIENT) {
+            connectButton.setText("CLIENT");
             sc = new SocketClient();
             // put into a thread so the gui still runs while we are listening
             Thread one = new Thread(() -> sc.connect(server, PORT, this));
 
             one.start();
         } else {
+            connectButton.setText("SERVER");
             ss = new SocketServer();
             // put into a thread so the gui still runs while we are listening
             Thread one = new Thread(() -> ss.connect(PORT, this));
