@@ -1,3 +1,6 @@
+import core.Board;
+import core.MapObject;
+
 public class Game {
 
     public Board board;
@@ -7,9 +10,10 @@ public class Game {
      */
     public Game() {
 
-        board = new Board();
-        board.build();
+        board = new Board(9,9);
+        board.build(new MapObject(9,9));
         board.display();
+
     }
 
 
