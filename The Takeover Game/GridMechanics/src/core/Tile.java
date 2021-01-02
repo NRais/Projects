@@ -24,27 +24,19 @@ public class Tile {
         return this.type;
     }
 
+    public int getX() {
+        return x;
+    }
+    public int getY() {
+        return y;
+    }
+
     /*
      * initialize default
      */
-    public Tile() {
-        this(5, 5, 1024);
-    }
-
-    /*
-     * initialize specifics
-     */
-    public Tile(int totalTilesX, int totalTilesY, double screenSize) {
-
-        // TODO assign tile hieght width based upon screen size and total tiles
-
-    }
-
-    /*
-     * draw the board onto the UI
-     */
-    public void draw() {
-
+    public Tile(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
 
 }

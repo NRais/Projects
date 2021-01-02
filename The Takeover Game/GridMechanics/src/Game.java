@@ -1,3 +1,4 @@
+import UI.GameUI;
 import core.Board;
 import core.MapObject;
 
@@ -12,7 +13,11 @@ public class Game {
 
         board = new Board(9,9);
         board.build(new MapObject(9,9));
-        board.display();
+
+
+        GameUI ui = new GameUI();
+
+        ui.show(board);
 
     }
 

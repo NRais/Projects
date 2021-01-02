@@ -16,9 +16,9 @@ public class Board {
     public void build(MapObject map) {
 
         // initialize all tiles
-        for (Tile[] tileR : tiles) {
-            for (Tile t : tileR) {
-                t = new Tile();
+        for (int y = 0; y < tiles.length; y++) {
+            for (int x = 0; x < tiles[0].length; x++) {
+                tiles[x][y] = new Tile(x, y);
             }
         }
 
@@ -28,15 +28,10 @@ public class Board {
     /*
      * **** DISPLAY ****
      */
-    public void display() {
-
-        // display all tiles
-        for (Tile[] tileR : tiles) {
-            for (Tile t : tileR) {
-                t.draw();
-            }
-        }
+    public Tile[][] getBoard() {
+        return tiles;
     }
+
 
     /*
      * one to one transfer of map integers to tile types
