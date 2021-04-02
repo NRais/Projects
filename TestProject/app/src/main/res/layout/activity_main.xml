@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_light"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="center"
+        app:srcCompat="@drawable/landscape_bridge_sun" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/mainLogo"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/bottomImage"
+            android:layout_below="@+id/mainLogo"
+            android:layout_centerHorizontal="true"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <ImageButton
+                android:id="@+id/playButton"
+                style="@android:style/Widget.ImageButton"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignTop="@+id/textView2"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="31dp"
+                android:contentDescription="text"
+                app:srcCompat="@drawable/amla_default"
+                android:cropToPadding="true"
+                android:elevation="10dp"
+                android:scaleType="fitXY" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="15dp"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="Play"
+                android:textColor="@android:color/primary_text_light"
+                android:textSize="24sp"
+                android:textStyle="italic" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/mainLogo"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        app:srcCompat="@drawable/bannerlabel"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="0dp" />
+
+    <TextView
+        android:id="@+id/mainText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:text="Copyright 2021 Nathansoftware.com under the CC BY-ND 4.0 license"
+        android:textSize="16sp"
+        android:textStyle="italic" />
+
+</RelativeLayout>

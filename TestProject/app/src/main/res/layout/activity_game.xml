@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_light"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="center"
+        app:srcCompat="@drawable/landscape_hills_01" />
+
+    <LinearLayout
+        android:id="@+id/linearPane"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/mainLogo"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TableRow
+                android:id="@+id/t1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:id="@+id/t1_l"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical" >
+
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/t1_r"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical" >
+
+                </LinearLayout>
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/t2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TableRow
+                android:id="@+id/t3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TableRow
+                android:id="@+id/t4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </TableLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/mainLogo"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        app:srcCompat="@drawable/bannerlabel"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="0dp" />
+
+    <TextView
+        android:id="@+id/mainText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:text="Copyright 2021 Nathansoftware.com under the CC BY-ND 4.0 license"
+        android:textSize="16sp"
+        android:textStyle="italic" />
+
+</RelativeLayout>
