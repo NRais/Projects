@@ -26,6 +26,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -39,9 +41,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     Integer playerNumber = 4;
     Integer generatedNumber = 0;
 
-    private static final String[] CITIES = new String[] {"Ecput","Elescon","Helston Stopfare","Keep","Glenmore Forest"};
-
-
     HashMap<String, ArrayList<Token>> cityTokens = new HashMap<>();
     HashMap<String, ArrayList<Token>>[] pTokens;
     ArrayList<Object>[] pClues;
@@ -49,24 +48,48 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private void giveOutTokens() {
         Random r = new Random();
 
+        // populate location tokens
+        for (String s : Token.CITIES) {
+            ArrayList<Token> list = new ArrayList<>();
+            list.add(new Token(s, r.nextBoolean()));
+            list.add(new Token(s, r.nextBoolean()));
+            list.add(new Token(s, r.nextBoolean()));
+            list.add(new Token(s, r.nextBoolean()));
+
+            cityTokens.put(s, list);
+        }
+
         // for every player
         for (int i = 0; i < playerNumber; i++) {
             // give up to ten tokens
             for (int j = 0; j < r.nextInt(10); j++) {
 
-                String city = CITIES[r.nextInt(5)];
-                ArrayList<Token> tokens = new ArrayList<>();
+                String city = Token.CITIES[r.nextInt(Token.CITIES.length-1)];
 
-                if (pTokens[i].containsKey(city)) {
-                    for (Token t : pTokens[i].get(city)) {
-                        tokens.add(t);
+                // if there are tokens left in the city
+                if (cityTokens.get(city).size() > 0) {
+                    ArrayList<Token> tokens = new ArrayList<>();
+
+                    // check if there are already tokens of this type for the player
+                    if (pTokens[i].containsKey(city)) {
+                        for (Token t : pTokens[i].get(city)) {
+                            // if so record them too
+                            tokens.add(t);
+                        }
                     }
+
+                    // add the new token
+                    Token t = new Token(city, r.nextBoolean());
+                    tokens.add(t);
+
+                    pTokens[i].put(city, tokens);
+
+                    // remove a token from the city list, TODO remove the right token rather than any token
+                    ArrayList<Token> cT = cityTokens.get(city);
+                    cT.remove(0);
+
+                    cityTokens.put(city, cT);
                 }
-
-                Token t = new Token(city, r.nextBoolean());
-                tokens.add(t);
-
-                pTokens[i].put(city, tokens);
             }
         }
     }
@@ -269,8 +292,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             final int finalI = i;
             btn.setOnClickListener(v -> {
                 Intent intent = new Intent(this, PlayerActivity.class);
+                Log.d("ARRAYLIST", " :: " + pTokens[finalI]);
                 intent.putExtra("PLAYER_ID", finalI);
-                intent.putExtra("PLAYER_TOKENS", pTokens[finalI]);
+                Bundle args = new Bundle();
+                args.putSerializable("PLAYER_TOKENS", pTokens[finalI]);
+                args.putSerializable("CITY_TOKENS", cityTokens);
+                intent.putExtra("BUNDLE",args);
                 startActivity(intent);
             });
 
