@@ -1,14 +1,12 @@
 package com.example.testproject;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.InputType;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
 import android.util.Log;
@@ -31,12 +29,14 @@ import java.util.HashMap;
 
 public class PlayerActivity extends AppCompatActivity {
 
-    HashMap<String, ArrayList<Token>> tokens;
-    HashMap<String, ArrayList<Token>> cityTokens;
+    HashMap<String, ArrayList<Token>>[] tokens;
+    HashMap<String, ArrayList<Token>> locationTokens;
 
     TextView cityInfoText;
     LinearLayout tokenRow;
     TableRow clueRow;
+
+    Integer playerNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +44,14 @@ public class PlayerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_player);
 
         // load data from intent
-        Integer playerNum = getIntent().getIntExtra("PLAYER", -100) + 1;
+        playerNum = getIntent().getIntExtra("PLAYER", -100);
         Bundle bundleOfTokens = getIntent().getBundleExtra("BUNDLE");
-        tokens = (HashMap<String, ArrayList<Token>>) bundleOfTokens.getSerializable("PLAYER_TOKENS");
-        cityTokens = (HashMap<String, ArrayList<Token>>) bundleOfTokens.getSerializable("CITY_TOKENS");
+        tokens = (HashMap<String, ArrayList<Token>>[]) bundleOfTokens.getSerializable("PLAYER_TOKENS");
+        locationTokens = (HashMap<String, ArrayList<Token>>) bundleOfTokens.getSerializable("CITY_TOKENS");
 
         // setup views
-        NumberPicker picker = findViewById(R.id.picker);
         TextView banner = findViewById(R.id.bannerTextPlayer);
-        banner.append(" " + playerNum);
+        banner.append(" " + (playerNum+1));
         cityInfoText = findViewById(R.id.cityInfoText);
         tokenRow = findViewById(R.id.tokenRow_1);
         clueRow = findViewById(R.id.clueRow);
@@ -60,9 +59,11 @@ public class PlayerActivity extends AppCompatActivity {
         initializePlayerTokens();
 
         // setup scroll picker
+        NumberPicker picker = findViewById(R.id.picker);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             picker.setTextColor(Color.WHITE);
         }
+        picker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         picker.setMinValue(0);
         picker.setMaxValue(Token.CITIES.length-1);
         picker.setDisplayedValues(Token.CITIES);
@@ -72,14 +73,37 @@ public class PlayerActivity extends AppCompatActivity {
         setLocation(0); // initialize the textview starting position
 
         // setup draw token button
-        Button b = new Button(this);
+        Button b = findViewById(R.id.drawTokenButton);
         b.setOnClickListener(v -> {
             // load the location and see if there are any ones left
             String location = getLocation(picker.getValue());
+            Log.d("LOC", " SL " + location + " | " + picker.getValue());
             if (!location.equals("NONE")) {
-                
+
+                // pop the top off the token pile
+                Token t = locationTokens.get(location).get(0);
+                locationTokens.get(location).remove(0);
+
+                playerAdd(t);
+
+                // refresh
+                tokenRow.removeAllViews();
+                initializePlayerTokens();
+                setLocation(picker.getValue());
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d("CDA", "onBackPressed Called");
+
+        Intent intent = new Intent(this, GameActivity.class);
+        Bundle args = new Bundle();
+            args.putSerializable("PLAYER_TOKENS", tokens);
+            args.putSerializable("CITY_TOKENS", locationTokens);
+        intent.putExtra("BUNDLE",args);
+        startActivity(intent);
     }
 
     /**
@@ -95,7 +119,7 @@ public class PlayerActivity extends AppCompatActivity {
         layout.setLayoutParams(GameActivity.defaultRLP());
 
         // for each location in the players token collection
-        for (ArrayList<Token> location : tokens.values()) {
+        for (ArrayList<Token> location : tokens[playerNum].values()) {
 
 
             // name of the city
@@ -215,8 +239,8 @@ public class PlayerActivity extends AppCompatActivity {
      */
     private void setLocation(int value) {
         int num = 0;
-        if (cityTokens.containsKey(Token.CITIES[value])) {
-            num = cityTokens.get(Token.CITIES[value]).size();
+        if (locationTokens.containsKey(Token.CITIES[value])) {
+            num = locationTokens.get(Token.CITIES[value]).size();
         }
 
         cityInfoText.setText( num + " tokens");
@@ -229,8 +253,9 @@ public class PlayerActivity extends AppCompatActivity {
      */
     private String getLocation(int value) {
         String s = "NONE";
-        if (Token.CITIES.length < value) {
-            if (cityTokens.get(Token.CITIES[value]).size() > 0) {
+        if (value < Token.CITIES.length) {
+            Log.d("CHECKING ", "City " + Token.CITIES[value]);
+            if (locationTokens.get(Token.CITIES[value]).size() > 0) {
                 s = Token.CITIES[value];
             }
         }
@@ -238,4 +263,21 @@ public class PlayerActivity extends AppCompatActivity {
         return s;
     }
 
+
+    private void playerAdd(Token t) {
+        ArrayList<Token> thisLocationsPile = new ArrayList<>();
+
+        // check if there are already tokens of this type
+        if (tokens[playerNum].containsKey(t.getCity())) {
+            for (Token next : tokens[playerNum].get(t.getCity())) {
+                // if so record them too
+                thisLocationsPile.add(next);
+            }
+        }
+
+        // add the new token
+        thisLocationsPile.add(t);
+
+        tokens[playerNum].put(t.getCity(), thisLocationsPile);
+    }
 }

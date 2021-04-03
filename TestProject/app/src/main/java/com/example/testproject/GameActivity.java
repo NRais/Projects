@@ -34,7 +34,7 @@ public class GameActivity extends AppCompatActivity {
     Integer playerNumber = 4;
     Integer generatedNumber = 0;
 
-    HashMap<String, ArrayList<Token>> cityTokens = new HashMap<>();
+    HashMap<String, ArrayList<Token>> locationTokens = new HashMap<>();
     HashMap<String, ArrayList<Token>>[] pTokens;
     ArrayList<Object>[] pClues;
 
@@ -52,7 +52,7 @@ public class GameActivity extends AppCompatActivity {
             list.add(new Token(s, r.nextBoolean()));
             list.add(new Token(s, r.nextBoolean()));
 
-            cityTokens.put(s, list);
+            locationTokens.put(s, list);
         }
 
         // for every player
@@ -63,7 +63,7 @@ public class GameActivity extends AppCompatActivity {
                 String city = Token.CITIES[r.nextInt(Token.CITIES.length-1)];
 
                 // if there are tokens left in the city
-                if (cityTokens.get(city).size() > 0) {
+                if (locationTokens.get(city).size() > 0) {
                     ArrayList<Token> tokens = new ArrayList<>();
 
                     // check if there are already tokens of this type for the player
@@ -81,10 +81,10 @@ public class GameActivity extends AppCompatActivity {
                     pTokens[i].put(city, tokens);
 
                     // remove a token from the city list, TODO remove the right token rather than any token
-                    ArrayList<Token> cT = cityTokens.get(city);
+                    ArrayList<Token> cT = locationTokens.get(city);
                     cT.remove(0);
 
-                    cityTokens.put(city, cT);
+                    locationTokens.put(city, cT);
                 }
             }
         }
@@ -95,14 +95,36 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        // generate consumer object that can be passed to the popup method
-        Consumer<EditText> generatorFunction = t -> fireGeneratorDialogue(t);
-        Consumer<EditText> playerNumberFunction = t -> firePlayerCountDialogue(t);
+        // load data from intent
+        Bundle bundleOfTokens = getIntent().getBundleExtra("BUNDLE");
 
-        // display popups to get user input
-        //inputDialog = popup("Enter a game number", generatorFunction);
-        playerDialog = popup("Enter a player count", playerNumberFunction);
+        // IF WE RECEIVED DATA load it
+        if (bundleOfTokens != null) {
 
+            pTokens = (HashMap<String, ArrayList<Token>>[]) bundleOfTokens.getSerializable("PLAYER_TOKENS");
+            locationTokens = (HashMap<String, ArrayList<Token>>) bundleOfTokens.getSerializable("CITY_TOKENS");
+            pClues = new ArrayList[playerNumber];
+
+            // initialize
+            for (int i = 0; i < playerNumber; i++) {
+                pClues[i] = new ArrayList<>();
+            }
+
+            Log.d("OPEN BUNDLE ", "" + pClues);
+
+            drawPlayers();
+        }
+        // OTHERWISE fire startup normally
+        else {
+
+            // generate consumer object that can be passed to the popup method
+            Consumer<EditText> generatorFunction = t -> fireGeneratorDialogue(t);
+            Consumer<EditText> playerNumberFunction = t -> firePlayerCountDialogue(t);
+
+            // display popups to get user input
+            //inputDialog = popup("Enter a game number", generatorFunction);
+            playerDialog = popup("Enter a player count", playerNumberFunction);
+        }
     }
 
     /**
@@ -225,18 +247,17 @@ public class GameActivity extends AppCompatActivity {
         // if they enter some number do that
         if (number.matches("-?\\d+")) {
 
-            //try {
-                playerNumber = Integer.parseInt(number);
+            playerNumber = Integer.parseInt(number);
+
+            // if valid number
+            if (playerNumber <= 4 | playerNumber >= 1) {
 
                 // hide it :)
                 playerDialog.cancel();
                 playerDialog.dismiss();
 
                 init();
-
-           // } catch (Exception e) {
-           //     Log.e("ERROR", "failed to load what they input for PLAYER NUMBER");
-            //}
+            }
         }
     }
 
@@ -282,8 +303,8 @@ public class GameActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, PlayerActivity.class);
                 intent.putExtra("PLAYER", finalI);
                 Bundle args = new Bundle();
-                    args.putSerializable("PLAYER_TOKENS", pTokens[finalI]);
-                    args.putSerializable("CITY_TOKENS", cityTokens);
+                    args.putSerializable("PLAYER_TOKENS", pTokens);
+                    args.putSerializable("CITY_TOKENS", locationTokens);
                 intent.putExtra("BUNDLE",args);
                 startActivity(intent);
             });
@@ -334,6 +355,14 @@ public class GameActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        Log.d("CGA", "onBackPressed Called");
+
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
     public static RelativeLayout.LayoutParams defaultRLP() {
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -360,7 +389,7 @@ public class GameActivity extends AppCompatActivity {
             public void onClick(View widget) {
                 Log.d("POPUP", "Stirng " + name);
                 //Toast.makeText(getApplicationContext(), name , Toast.LENGTH_LONG).show();
-                popupMessage(drawable[img-1], name);
+                popupMessage(drawable[img-1], img + " " + name + " Tokens");
                 widget.invalidate();
             }
         },string.length()-1, string.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE); // this will add a clickable span and on click will delete the span and text
