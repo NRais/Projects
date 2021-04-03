@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 class Token implements Serializable {
 
-    public static final String[] CITIES = new String[] {"Ecput","Elescon","Helston Stopfare","Keep","Glenmore Forest"};
+    public static final String[] CITIES = new String[] {"Belston", "Campaign Hall", "Coms Array", "Covern MilitaryBase", "Elis North", "Elscon", "Glinnin Forest", "Helston Stopfare", "Keep", "Levington", "New Valden", "Norithxe", "Northern Settlement", "Ruins of Talmon" };
 
     private boolean value; // every token is either true or false
     private String city; // every token has a city name
