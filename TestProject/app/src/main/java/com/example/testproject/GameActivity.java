@@ -1,15 +1,12 @@
 package com.example.testproject;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
@@ -20,20 +17,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.function.Consumer;
 
-public class GameActivity extends AppCompatActivity implements View.OnClickListener {
+public class GameActivity extends AppCompatActivity {
 
 
     AlertDialog inputDialog = null;
@@ -45,6 +38,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     HashMap<String, ArrayList<Token>>[] pTokens;
     ArrayList<Object>[] pClues;
 
+    /**
+     * Currently randomly assign tokens, TODO give out tokens based upon patterns, and generatedNumber
+     */
     private void giveOutTokens() {
         Random r = new Random();
 
@@ -62,7 +58,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         // for every player
         for (int i = 0; i < playerNumber; i++) {
             // give up to ten tokens
-            for (int j = 0; j < r.nextInt(10); j++) {
+            for (int j = 0; j < r.nextInt(5) + 2; j++) {
 
                 String city = Token.CITIES[r.nextInt(Token.CITIES.length-1)];
 
@@ -99,10 +95,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-
-        LinearLayout lin = findViewById(R.id.linearPane);
-
-
         // generate consumer object that can be passed to the popup method
         Consumer<EditText> generatorFunction = t -> fireGeneratorDialogue(t);
         Consumer<EditText> playerNumberFunction = t -> firePlayerCountDialogue(t);
@@ -113,6 +105,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    /**
+     * Launcher method that sets up all the data and the board
+     */
     private void init() {
         pClues = new ArrayList[playerNumber];
         pTokens = new HashMap[playerNumber];
@@ -123,17 +118,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             pClues[i] = new ArrayList<>();
         }
 
+        createGame(generatedNumber);
+
         // TODO currently giving out tokens to test
         giveOutTokens();
 
         drawPlayers();
-
-        createGame(generatedNumber);
-    }
-
-    @Override
-    public void onClick(View v) {
-
     }
 
     /**
@@ -268,12 +258,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * TODO setup the buttons and stuff for the cities
-     *
+     * Setup the buttons and stuff for the players and their cities
      */
     private void drawPlayers() {
 
-        LinearLayout[] spots = new LinearLayout[] { findViewById(R.id.t2_l), findViewById(R.id.t2_r), findViewById(R.id.t4_l), findViewById(R.id.t4_r), findViewById(R.id.t4)};
+        LinearLayout[] spots = new LinearLayout[] { findViewById(R.id.t2_l), findViewById(R.id.t2_r), findViewById(R.id.t4_l), findViewById(R.id.t4_r), findViewById(R.id.clueRow)};
 
         // for each active player draw their stuff
         for (int i = 0; i < playerNumber; i++) {
@@ -281,10 +270,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             Log.d("DRAWING", "PLAYER " + i);
 
             // relative layout to put everything in
-            LinearLayout relativeLayout = new LinearLayout(this);
+            LinearLayout linearLayout = new LinearLayout(this);
             // Defining the layout parameters of the layout
-            RelativeLayout.LayoutParams rlp = defaultRLP();
-            relativeLayout.setLayoutParams(rlp);
+            linearLayout.setLayoutParams(defaultRLP());
 
             // create a new button
             Button btn = new Button(this);
@@ -292,11 +280,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             final int finalI = i;
             btn.setOnClickListener(v -> {
                 Intent intent = new Intent(this, PlayerActivity.class);
-                Log.d("ARRAYLIST", " :: " + pTokens[finalI]);
-                intent.putExtra("PLAYER_ID", finalI);
+                intent.putExtra("PLAYER", finalI);
                 Bundle args = new Bundle();
-                args.putSerializable("PLAYER_TOKENS", pTokens[finalI]);
-                args.putSerializable("CITY_TOKENS", cityTokens);
+                    args.putSerializable("PLAYER_TOKENS", pTokens[finalI]);
+                    args.putSerializable("CITY_TOKENS", cityTokens);
                 intent.putExtra("BUNDLE",args);
                 startActivity(intent);
             });
@@ -321,34 +308,33 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             tv.append("   ");
 
             // Defining the layout parameters of the TextView
-            RelativeLayout.LayoutParams lp = defaultRLP();
             RelativeLayout.LayoutParams lp2 = defaultRLP();
             lp2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             lp2.addRule(RelativeLayout.RIGHT_OF, btn.getId());
 
-            // Setting the parameters on the TextView
-            btn.setLayoutParams(lp);
+            // Setting the parameters on the TextView and Button
+            btn.setLayoutParams(defaultRLP());
             tv.setLayoutParams(lp2);
 
             // Adding the stuff to the RelativeLayout as a child
             if (i%2 == 0) {
-                relativeLayout.addView(btn);
-                relativeLayout.addView(tv);
+                linearLayout.addView(btn);
+                linearLayout.addView(tv);
             } else {
                 tv.append("Clues: " + pClues[i].size() + "   ");
-                relativeLayout.addView(tv);
-                relativeLayout.addView(btn);
+                linearLayout.addView(tv);
+                linearLayout.addView(btn);
             }
 
             tv.setMovementMethod(LinkMovementMethod.getInstance());
 
-            spots[i].addView(relativeLayout);
+            spots[i].addView(linearLayout);
         }
 
 
     }
 
-    private static RelativeLayout.LayoutParams defaultRLP() {
+    public static RelativeLayout.LayoutParams defaultRLP() {
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -356,6 +342,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    /**
+     * Add an image into a string
+     *
+     * @param string - the text string
+     * @param img - the image number
+     * @param name - the city name to display in the popup
+     * @return - the ouputed CharSeq containing all this data
+     */
     private CharSequence addImageAsterisk(String string, Integer img, String name) {
         Integer[] drawable = new Integer[] {R.drawable.ornate_stop_25, R.drawable.ornate_stop_25_2, R.drawable.ornate_stop_25_3, R.drawable.ornate_stop_25_4};
         ImageSpan imageSpan = new ImageSpan(this, drawable[img-1], ImageSpan.ALIGN_BOTTOM);
