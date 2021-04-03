@@ -12,13 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="center"
-        app:srcCompat="@drawable/landscape_hills_01" />
+        app:srcCompat="@drawable/landscape_mountains_04" />
 
     <LinearLayout
         android:id="@+id/linearPane"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/mainLogo"
+        android:layout_below="@+id/bannerTextPlayer"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:gravity="center"
@@ -29,79 +29,84 @@
             android:layout_height="match_parent">
 
             <TableRow
-                android:id="@+id/t1"
+                android:id="@+id/scrollRow"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/scrollRowLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal">
+
+                    <TextView
+                        android:id="@+id/cityInfoText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TextView"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp" />
+
+                    <Space
+                        android:layout_width="30dp"
+                        android:layout_height="wrap_content" />
+
+                    <NumberPicker
+                        android:id="@+id/picker"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp" />
+
+                    <Space
+                        android:layout_width="30dp"
+                        android:layout_height="wrap_content" />
+
+                    <Button
+                        android:id="@+id/button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Draw Token" />
+
+                </LinearLayout>
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/spaceRow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tokenRow"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/cityInfoText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="TextView"
-                    android:textColor="#FFFFFF"
-                    android:textSize="18sp" />
-
-                <Space
-                    android:layout_width="30dp"
-                    android:layout_height="wrap_content" />
-
-                <NumberPicker
-                    android:id="@+id/picker"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp" />
-
-                <Space
-                    android:layout_width="30dp"
-                    android:layout_height="wrap_content" />
-
-                <Button
-                    android:id="@+id/button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Draw Token" />
-
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/t2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" >
-
                 <LinearLayout
-                    android:id="@+id/t2_l"
+                    android:id="@+id/tokenRow_1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:orientation="vertical">
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/t2_r"
-                    android:gravity="right"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
                     android:orientation="vertical">
                 </LinearLayout>
             </TableRow>
 
             <TableRow
-                android:id="@+id/t3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <Space
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp" />
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/t4"
+                android:id="@+id/clueRow"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" >
 
                 <LinearLayout
-                    android:id="@+id/t4_l"
+                    android:id="@+id/clueRow_l"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -109,7 +114,7 @@
 
                 </LinearLayout>
                 <LinearLayout
-                    android:id="@+id/t4_r"
+                    android:id="@+id/clueRow_r"
                     android:gravity="right"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -120,14 +125,19 @@
         </TableLayout>
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/mainLogo"
+    <TextView
+        android:id="@+id/bannerTextPlayer"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        app:srcCompat="@drawable/bannerlabel"
+        android:fontFamily="serif"
+        android:fontStyle="italic"
+        android:gravity="center_horizontal"
+        android:text="PLAYER"
+        android:textColor="@color/colorPrimary"
+        android:textSize="45dp"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="0dp" />
 
@@ -139,7 +149,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
         android:gravity="center_horizontal"
-        android:text="Copyright 2021 Nathansoftware.com under the CC BY-ND 4.0 license"
+        android:textColor="@color/white"
+        android:text="@string/license"
         android:textSize="16sp"
         android:textStyle="italic" />
 

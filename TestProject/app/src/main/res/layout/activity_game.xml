@@ -112,7 +112,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
         android:gravity="center_horizontal"
-        android:text="Copyright 2021 Nathansoftware.com under the CC BY-ND 4.0 license"
+        android:textColor="@color/white"
+        android:text="@string/license"
         android:textSize="16sp"
         android:textStyle="italic" />
 

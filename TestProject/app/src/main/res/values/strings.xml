@@ -10,4 +10,5 @@
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="alert_title">ALERT</string>
+    <string name="license">Copyright 2021 Nathansoftware.com under the CC BY-ND 4.0 license</string>
 </resources>
