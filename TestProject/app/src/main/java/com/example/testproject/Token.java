@@ -2,14 +2,19 @@ package com.example.testproject;
 
 class Token {
 
-    boolean value;
+    private boolean value;
+    private String city;
 
-    Token(boolean value) {
+    Token(String city, boolean value) {
+        this.city = city;
         this.value = value;
     }
 
     public boolean getValue() {
         return value;
+    }
+    public String getCity() {
+        return city;
     }
 
 }

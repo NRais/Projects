@@ -24,6 +24,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ImageButton playButton = findViewById(R.id.playButton);
 
         playButton.setOnClickListener(this);
+
+
+        // add these two lines, if you wish to close the app:
+        //finishAffinity();
+        //System.exit(0);
     }
 
     @Override
