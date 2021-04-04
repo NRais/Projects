@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -32,6 +33,7 @@ public class PlayerActivity extends AppCompatActivity {
     ArrayList<Clue>[] clues;
 
     TextView cityInfoText;
+    LinearLayout cityInfoTextLayout;
     LinearLayout tokenRow;
     TableRow clueRow;
 
@@ -53,12 +55,13 @@ public class PlayerActivity extends AppCompatActivity {
         TextView banner = findViewById(R.id.bannerTextPlayer);
         banner.append(" " + (playerNum+1));
         cityInfoText = findViewById(R.id.cityInfoText);
+        cityInfoTextLayout = findViewById(R.id.cityInfoTextLayout);
         tokenRow = findViewById(R.id.tokenRow_1);
         clueRow = findViewById(R.id.clueRow);
 
         initializePlayerTokens();
 
-        // setup scroll picker
+        // SETUP scroll picker -----
         NumberPicker picker = findViewById(R.id.picker);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             picker.setTextColor(Color.WHITE);
@@ -72,7 +75,7 @@ public class PlayerActivity extends AppCompatActivity {
 
         setLocation(0); // initialize the textview starting position
 
-        // setup draw token button
+        // SETUP draw token button -----
         Button b = findViewById(R.id.drawTokenButton);
         b.setOnClickListener(v -> {
             // load the location and see if there are any ones left
@@ -93,11 +96,17 @@ public class PlayerActivity extends AppCompatActivity {
             }
         });
 
-
+        // SETUP floating action button ------
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
             AlertDialogPopup a = new AlertDialogPopup();
             a.setupBuilder(clues[playerNum], "Clues:", R.drawable.book, null, null, this);
+        });
+
+        // SETUP floating action button for HELP ------
+        FloatingActionButton fab2 = findViewById(R.id.fab2);
+        fab2.setOnClickListener(view -> {
+            // TODO popup a list of all cities and their stats
         });
     }
 
@@ -218,6 +227,22 @@ public class PlayerActivity extends AppCompatActivity {
         }
 
         cityInfoText.setText( num + " tokens");
+
+        //TODO
+        /*LayoutInflater factory = LayoutInflater.from(this);
+        final View view = factory.inflate(R.layout.sample, null);
+        cityInfoTextLayout.addView(view);
+
+        Integer[] images = Token.getImages(Token.getType(Token.CITIES[value]));
+        // set the images
+        for (int i = 0; i < 4; i++) {
+            ImageView iv = view.findViewById(AlertDialogPopup.ALERTIMAGEIDS[i]);
+            if (images[i] == null) {
+                iv.setImageDrawable(null);
+            } else {
+                iv.setImageResource(images[i]);
+            }
+        }*/
     }
 
     /**

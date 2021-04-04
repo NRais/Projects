@@ -22,6 +22,7 @@ public class AlertDialogPopup {
      */
     AlertDialog alertDialog = null;
 
+    // structure to store the id's of the image views to manipulate
     static final int[] ALERTIMAGEIDS = {R.id.dialog_imageview, R.id.dialog_imageview2, R.id.dialog_imageview3, R.id.dialog_imageview4};
 
     /**
@@ -47,6 +48,7 @@ public class AlertDialogPopup {
             alertDialogBuilder.setView(view);
             // set the images
             for (int i = 0; i < 4; i++) {
+                // get the next imageview
                 ImageView iv = view.findViewById(ALERTIMAGEIDS[i]);
                 if (images[i] == null) {
                     iv.setImageDrawable(null);
