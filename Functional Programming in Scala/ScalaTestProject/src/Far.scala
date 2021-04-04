@@ -15,7 +15,7 @@ class Far {
   // OPTION
   // NOTE: this will return None, because one is none all are none
 
-  /*  val upper = for {
+    val upper = for {
        name <- request getParameter "name"
        trimmed <- Some(name.trim)
        upper <- Some(trimmed.toUpperCase) if trimmed.length != 0
@@ -49,5 +49,5 @@ class Far {
    z <- Right("lbah")
    } yield x + y + z
 
-   println("Either " + q3)*/
+   println("Either " + q3)
 }
