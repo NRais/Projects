@@ -1,6 +1,7 @@
 package com.example.testproject;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -35,8 +37,8 @@ public class GameActivity extends AppCompatActivity {
     Integer generatedNumber = 0;
 
     HashMap<String, ArrayList<Token>> locationTokens = new HashMap<>();
-    HashMap<String, ArrayList<Token>>[] pTokens;
-    ArrayList<Object>[] pClues;
+    HashMap<String, ArrayList<Token>>[] pTokens = new HashMap[playerNumber];
+    ArrayList<Clue>[] pClues = new ArrayList[playerNumber];
 
     /**
      * Currently randomly assign tokens, TODO give out tokens based upon patterns, and generatedNumber
@@ -103,14 +105,7 @@ public class GameActivity extends AppCompatActivity {
 
             pTokens = (HashMap<String, ArrayList<Token>>[]) bundleOfTokens.getSerializable("PLAYER_TOKENS");
             locationTokens = (HashMap<String, ArrayList<Token>>) bundleOfTokens.getSerializable("CITY_TOKENS");
-            pClues = new ArrayList[playerNumber];
-
-            // initialize
-            for (int i = 0; i < playerNumber; i++) {
-                pClues[i] = new ArrayList<>();
-            }
-
-            Log.d("OPEN BUNDLE ", "" + pClues);
+            pClues = (ArrayList<Clue>[])bundleOfTokens.getSerializable("CLUES");
 
             drawPlayers();
         }
@@ -131,9 +126,6 @@ public class GameActivity extends AppCompatActivity {
      * Launcher method that sets up all the data and the board
      */
     private void init() {
-        pClues = new ArrayList[playerNumber];
-        pTokens = new HashMap[playerNumber];
-
         // initialize
         for (int i = 0; i < playerNumber; i++) {
             pTokens[i] = new HashMap<>();
@@ -141,9 +133,6 @@ public class GameActivity extends AppCompatActivity {
         }
 
         createGame(generatedNumber);
-
-        // TODO currently giving out tokens to test
-        giveOutTokens();
 
         drawPlayers();
     }
@@ -276,6 +265,18 @@ public class GameActivity extends AppCompatActivity {
      */
     private void createGame(Integer gameNumber) {
 
+        Random r = new Random();
+
+        for (ArrayList<Clue> clues : pClues) {
+            for (int i = 0; i < 4; i++) {
+                Clue c = new Clue(Clue.TYPES[i], r.nextBoolean(), false);
+                clues.add(c);
+            }
+        }
+
+        // TODO currently giving out tokens to test
+        giveOutTokens();
+
     }
 
     /**
@@ -305,6 +306,8 @@ public class GameActivity extends AppCompatActivity {
                 Bundle args = new Bundle();
                     args.putSerializable("PLAYER_TOKENS", pTokens);
                     args.putSerializable("CITY_TOKENS", locationTokens);
+                    Log.d("CLUES ", " C"  + pClues[finalI]);
+                    args.putSerializable("CLUES", pClues);
                 intent.putExtra("BUNDLE",args);
                 startActivity(intent);
             });
@@ -371,6 +374,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
 
+    public static final Integer[] DRAWABLE = new Integer[] {R.drawable.ornate_stop_25, R.drawable.ornate_stop_25_2, R.drawable.ornate_stop_25_3, R.drawable.ornate_stop_25_4};
     /**
      * Add an image into a string
      *
@@ -380,37 +384,21 @@ public class GameActivity extends AppCompatActivity {
      * @return - the ouputed CharSeq containing all this data
      */
     private CharSequence addImageAsterisk(String string, Integer img, String name) {
-        Integer[] drawable = new Integer[] {R.drawable.ornate_stop_25, R.drawable.ornate_stop_25_2, R.drawable.ornate_stop_25_3, R.drawable.ornate_stop_25_4};
-        ImageSpan imageSpan = new ImageSpan(this, drawable[img-1], ImageSpan.ALIGN_BOTTOM);
+        final Context context = this;
+        ImageSpan imageSpan = new ImageSpan(this, DRAWABLE[img-1], ImageSpan.ALIGN_BOTTOM);
         final SpannableString spannableString = new SpannableString(string);
         spannableString.setSpan(imageSpan, string.length()-1, string.length(), 0);
         spannableString.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                Log.d("POPUP", "Stirng " + name);
-                //Toast.makeText(getApplicationContext(), name , Toast.LENGTH_LONG).show();
-                popupMessage(drawable[img-1], img + " " + name + " Tokens");
+
+                AlertDialogPopup a = new AlertDialogPopup();
+                a.setupBuilder(null, "Location", DRAWABLE[img-1], img + " " + name + " tokens", Token.getImages(Token.getType(name)), context);
+
                 widget.invalidate();
             }
         },string.length()-1, string.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE); // this will add a clickable span and on click will delete the span and text
         return spannableString;
-    }
-
-    /**
-     *  Popup message for describing your city
-     */
-    AlertDialog alertDialog;
-    public void popupMessage(Integer drawable, String string){
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage(string);
-        alertDialogBuilder.setIcon(drawable);
-        alertDialogBuilder.setTitle("Location");
-        alertDialogBuilder.setNegativeButton("ok", (dialogInterface, i) -> {
-            alertDialog.cancel();
-            alertDialog.dismiss();
-        });
-        alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
     }
 
     /**

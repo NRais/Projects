@@ -1,14 +1,10 @@
 package com.example.testproject;
 
-import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ClickableSpan;
-import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -24,6 +20,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -31,6 +29,7 @@ public class PlayerActivity extends AppCompatActivity {
 
     HashMap<String, ArrayList<Token>>[] tokens;
     HashMap<String, ArrayList<Token>> locationTokens;
+    ArrayList<Clue>[] clues;
 
     TextView cityInfoText;
     LinearLayout tokenRow;
@@ -46,6 +45,7 @@ public class PlayerActivity extends AppCompatActivity {
         // load data from intent
         playerNum = getIntent().getIntExtra("PLAYER", -100);
         Bundle bundleOfTokens = getIntent().getBundleExtra("BUNDLE");
+        clues = (ArrayList<Clue>[])bundleOfTokens.getSerializable("CLUES");
         tokens = (HashMap<String, ArrayList<Token>>[]) bundleOfTokens.getSerializable("PLAYER_TOKENS");
         locationTokens = (HashMap<String, ArrayList<Token>>) bundleOfTokens.getSerializable("CITY_TOKENS");
 
@@ -77,7 +77,7 @@ public class PlayerActivity extends AppCompatActivity {
         b.setOnClickListener(v -> {
             // load the location and see if there are any ones left
             String location = getLocation(picker.getValue());
-            Log.d("LOC", " SL " + location + " | " + picker.getValue());
+            //**Log.d("LOC", " SL " + location + " | " + picker.getValue());
             if (!location.equals("NONE")) {
 
                 // pop the top off the token pile
@@ -92,6 +92,13 @@ public class PlayerActivity extends AppCompatActivity {
                 setLocation(picker.getValue());
             }
         });
+
+
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(view -> {
+            AlertDialogPopup a = new AlertDialogPopup();
+            a.setupBuilder(clues[playerNum], "Clues:", R.drawable.book, null, null, this);
+        });
     }
 
     @Override
@@ -102,6 +109,7 @@ public class PlayerActivity extends AppCompatActivity {
         Bundle args = new Bundle();
             args.putSerializable("PLAYER_TOKENS", tokens);
             args.putSerializable("CITY_TOKENS", locationTokens);
+            args.putSerializable("CLUES", clues);
         intent.putExtra("BUNDLE",args);
         startActivity(intent);
     }
@@ -123,8 +131,9 @@ public class PlayerActivity extends AppCompatActivity {
 
 
             // name of the city
-            String name = "";
             if (!location.isEmpty()) {
+
+                String name = location.get(0).getCity();
 
                 // box to put everything into
                 FrameLayout wrapper = new FrameLayout(this);
@@ -132,6 +141,14 @@ public class PlayerActivity extends AppCompatActivity {
                     background.setImageResource(R.drawable.background_box);
                     background.setAlpha(0.5f);
                 wrapper.addView(background);
+
+                Context context = this;
+                background.setOnClickListener(v -> {
+
+                    AlertDialogPopup a = new AlertDialogPopup();
+                    a.setupBuilder(null, "Location", GameActivity.DRAWABLE[location.size()-1], location.size() + " " + name + " tokens", Token.getImages(Token.getType(name)), context);
+
+                });
 
                 // inside box to hold children
                 LinearLayout box = new LinearLayout(this);
@@ -157,8 +174,6 @@ public class PlayerActivity extends AppCompatActivity {
 
                     images.addView(iv);
                 }
-
-                name = location.get(0).getCity();
 
                 Log.d("INIT", "Token " + name + " " + location.size());
 
@@ -193,47 +208,6 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     /**
-     * Add an image into a string
-     *
-     * @param string - the text string
-     * @param img - the image number
-     * @param name - the city name to display in the popup
-     * @return - the ouputed CharSeq containing all this data
-     */
-    private CharSequence addImageAsterisk(String string, Integer img, String name) {
-        Integer[] drawable = new Integer[] {R.drawable.ornate_stop_25, R.drawable.ornate_stop_25_2, R.drawable.ornate_stop_25_3, R.drawable.ornate_stop_25_4};
-        ImageSpan imageSpan = new ImageSpan(this, drawable[img-1], ImageSpan.ALIGN_BOTTOM);
-        final SpannableString spannableString = new SpannableString(string);
-        spannableString.setSpan(imageSpan, string.length()-1, string.length(), 0);
-        spannableString.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(View widget) {
-                Log.d("POPUP", "Stirng " + name);
-                //Toast.makeText(getApplicationContext(), name , Toast.LENGTH_LONG).show();
-                popupMessage(drawable[img-1], name);
-                widget.invalidate();
-            }
-        },string.length()-1, string.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE); // this will add a clickable span and on click will delete the span and text
-        return spannableString;
-    }
-    /**
-     *  Popup message for describing your city
-     */
-    AlertDialog alertDialog;
-    public void popupMessage(Integer drawable, String string){
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage(string);
-        alertDialogBuilder.setIcon(drawable);
-        alertDialogBuilder.setTitle("Location");
-        alertDialogBuilder.setNegativeButton("ok", (dialogInterface, i) -> {
-            alertDialog.cancel();
-            alertDialog.dismiss();
-        });
-        alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
-
-    /**
      * Set the textview to display the info from the current position of the scroll wheel
      * @param value
      */
@@ -264,6 +238,10 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * draw a new token from the city pile
+     * @param t
+     */
     private void playerAdd(Token t) {
         ArrayList<Token> thisLocationsPile = new ArrayList<>();
 
