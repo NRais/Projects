@@ -37,8 +37,8 @@ public class GameActivity extends AppCompatActivity {
     Integer generatedNumber = 0;
 
     HashMap<String, ArrayList<Token>> locationTokens = new HashMap<>();
-    HashMap<String, ArrayList<Token>>[] pTokens = new HashMap[playerNumber];
-    ArrayList<Clue>[] pClues = new ArrayList[playerNumber];
+    HashMap<String, ArrayList<Token>>[] pTokens;
+    ArrayList<Clue>[] pClues;
 
     /**
      * Currently randomly assign tokens, TODO give out tokens based upon patterns, and generatedNumber
@@ -103,9 +103,12 @@ public class GameActivity extends AppCompatActivity {
         // IF WE RECEIVED DATA load it
         if (bundleOfTokens != null) {
 
+            playerNumber = (Integer) bundleOfTokens.get("PLAYER_NUMBER");
             pTokens = (HashMap<String, ArrayList<Token>>[]) bundleOfTokens.getSerializable("PLAYER_TOKENS");
             locationTokens = (HashMap<String, ArrayList<Token>>) bundleOfTokens.getSerializable("CITY_TOKENS");
             pClues = (ArrayList<Clue>[])bundleOfTokens.getSerializable("CLUES");
+
+            Log.d("LOADING ", " PLAYERS " + playerNumber);
 
             drawPlayers();
         }
@@ -126,6 +129,9 @@ public class GameActivity extends AppCompatActivity {
      * Launcher method that sets up all the data and the board
      */
     private void init() {
+        pTokens = new HashMap[playerNumber];
+        pClues = new ArrayList[playerNumber];
+
         // initialize
         for (int i = 0; i < playerNumber; i++) {
             pTokens[i] = new HashMap<>();
@@ -268,7 +274,8 @@ public class GameActivity extends AppCompatActivity {
         Random r = new Random();
 
         for (ArrayList<Clue> clues : pClues) {
-            for (int i = 0; i < 4; i++) {
+            Log.d("PLAYER" , "NUMBER " + playerNumber);
+            for (int i = 0; i < playerNumber; i++) {
                 Clue c = new Clue(Clue.TYPES[i], r.nextBoolean(), false);
                 clues.add(c);
             }
@@ -304,6 +311,7 @@ public class GameActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, PlayerActivity.class);
                 intent.putExtra("PLAYER", finalI);
                 Bundle args = new Bundle();
+                    args.putSerializable("PLAYER_NUMBER", playerNumber);
                     args.putSerializable("PLAYER_TOKENS", pTokens);
                     args.putSerializable("CITY_TOKENS", locationTokens);
                     Log.d("CLUES ", " C"  + pClues[finalI]);

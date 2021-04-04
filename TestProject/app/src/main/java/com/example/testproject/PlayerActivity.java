@@ -38,6 +38,7 @@ public class PlayerActivity extends AppCompatActivity {
     TableRow clueRow;
 
     Integer playerNum;
+    Integer totalPlayers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,7 @@ public class PlayerActivity extends AppCompatActivity {
         clues = (ArrayList<Clue>[])bundleOfTokens.getSerializable("CLUES");
         tokens = (HashMap<String, ArrayList<Token>>[]) bundleOfTokens.getSerializable("PLAYER_TOKENS");
         locationTokens = (HashMap<String, ArrayList<Token>>) bundleOfTokens.getSerializable("CITY_TOKENS");
+        totalPlayers = (Integer)bundleOfTokens.getSerializable("PLAYER_NUMBER");
 
         // setup views
         TextView banner = findViewById(R.id.bannerTextPlayer);
@@ -116,6 +118,7 @@ public class PlayerActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, GameActivity.class);
         Bundle args = new Bundle();
+            args.putSerializable("PLAYER_NUMBER", totalPlayers);
             args.putSerializable("PLAYER_TOKENS", tokens);
             args.putSerializable("CITY_TOKENS", locationTokens);
             args.putSerializable("CLUES", clues);
