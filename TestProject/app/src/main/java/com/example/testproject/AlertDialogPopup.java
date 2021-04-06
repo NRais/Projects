@@ -3,6 +3,7 @@ package com.example.testproject;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.text.SpannableString;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AlertDialogPopup {
 
@@ -21,6 +23,9 @@ public class AlertDialogPopup {
      *  Popup message for describing your city
      */
     AlertDialog alertDialog = null;
+
+    // variable to handle token updates
+    public HashMap<String, ArrayList<Token>> allTokens = null;
 
     // structure to store the id's of the image views to manipulate
     static final int[] ALERTIMAGEIDS = {R.id.dialog_imageview, R.id.dialog_imageview2, R.id.dialog_imageview3, R.id.dialog_imageview4};
@@ -33,7 +38,9 @@ public class AlertDialogPopup {
      * @param c
      * @return
      */
-    public void setupBuilder(ArrayList<Clue> clues, String name, int drawable, String string, Integer[] images, Context c) {
+    public void setupBuilder(ArrayList<Clue> clues, String name, int drawable, CharSequence string, Integer[] images, Context c, HashMap<String, ArrayList<Token>> playerTokens) {
+        allTokens = playerTokens; // setup for value return
+
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(c);
         if (clues != null) {
             ListAdapter adapter = createAdapter(clues, c);
@@ -59,10 +66,27 @@ public class AlertDialogPopup {
         }
         alertDialogBuilder.setIcon(drawable);
         alertDialogBuilder.setTitle(name);
-        alertDialogBuilder.setNegativeButton("ok", (dialogInterface, i) -> {
+        alertDialogBuilder.setNeutralButton("Reveal 1 Token", (dialogInterface, i) -> {
+            // reveal token
+            if (allTokens != null) {
+                String city = string.toString().substring(string.toString().indexOf(" ") + 1, string.toString().indexOf(" tokens"));
+
+                // of there are tokens to reveal
+                if (!allTokens.get(city).isEmpty()) {
+
+                    // go find one
+                    for (Token t : allTokens.get(city)) {
+                        if (!t.isRevealed()) t.setRevealed(true);
+                    }
+                }
+            }
             alertDialog.cancel();
             alertDialog.dismiss();
         });
+        /*alertDialogBuilder.setPositiveButton("Dismiss", (dialogInterface, i) -> {
+            alertDialog.cancel();
+            alertDialog.dismiss();
+        });*/
         alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
@@ -100,4 +124,5 @@ public class AlertDialogPopup {
 
         return adapter;
     }
+
 }

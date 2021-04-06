@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.SpannableString;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -102,7 +103,7 @@ public class PlayerActivity extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
             AlertDialogPopup a = new AlertDialogPopup();
-            a.setupBuilder(clues[playerNum], "Clues:", R.drawable.book, null, null, this);
+            a.setupBuilder(clues[playerNum], "Clues:", R.drawable.book, null, null, this, null);
         });
 
         // SETUP floating action button for HELP ------
@@ -158,8 +159,16 @@ public class PlayerActivity extends AppCompatActivity {
                 background.setOnClickListener(v -> {
 
                     AlertDialogPopup a = new AlertDialogPopup();
-                    a.setupBuilder(null, "Location", GameActivity.DRAWABLE[location.size()-1], location.size() + " " + name + " tokens", Token.getImages(Token.getType(name)), context);
+                    SpannableString spannableString = new SpannableString(location.size() + " " + name + " tokens");
+                    a.setupBuilder(null, "Location", GameActivity.DRAWABLE[location.size()-1], spannableString, Token.getImages(Token.getType(name)), context, tokens[playerNum]);
 
+                    // on dialog dismiss check if anything has changed
+                    a.alertDialog.setOnDismissListener(dialog -> {
+                        if (a.allTokens != null) {
+                            Log.d("ALERT", "UPDATE P");
+                            tokens[playerNum] = a.allTokens;
+                        }
+                    });
                 });
 
                 // inside box to hold children

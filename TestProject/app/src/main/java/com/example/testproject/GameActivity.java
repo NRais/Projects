@@ -2,6 +2,7 @@ package com.example.testproject;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -87,8 +88,10 @@ public class GameActivity extends AppCompatActivity {
             pClues[i] = new ArrayList<>();
         }
 
-        /*TESTING
-        HashMap<Boolean[], Integer> map = new HashMap<>();
+        generatedNumber = generateNumber();
+
+        //TESTING
+        /*HashMap<Boolean[], Integer> map = new HashMap<>();
 
         Log.d("INIT", "INTIITITNITNITT");
 
@@ -317,7 +320,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     /**
-     * Currently randomly assign tokens, TODO give out tokens based upon patterns, and generatedNumber
+     * Assign tokens based upon the terrains patter
      */
     private void giveOutTokens(Boolean[] gameTerrain) {
 
@@ -326,47 +329,13 @@ public class GameActivity extends AppCompatActivity {
             ArrayList<Token> list = new ArrayList<>();
             Boolean[] types = Token.getTerrain(Token.getType(s));
 
-            // if the terrain and the cities type are the same then we throw a check mark token
+            // if the terrain and the cities type are the same then we throw a check mark token, otherwise a x marked token
             for (int i = 0; i < 4; i++) {
                 list.add(new Token(s, types[i] == gameTerrain[i]));
             }
 
             locationTokens.put(s, list);
         }
-
-        // for every player
-        /*for (int i = 0; i < playerNumber; i++) {
-            // give up to ten tokens
-            for (int j = 0; j < r.nextInt(5) + 2; j++) {
-
-                String city = Token.CITIES[r.nextInt(Token.CITIES.length-1)];
-
-                // if there are tokens left in the city
-                if (locationTokens.get(city).size() > 0) {
-                    ArrayList<Token> tokens = new ArrayList<>();
-
-                    // check if there are already tokens of this type for the player
-                    if (pTokens[i].containsKey(city)) {
-                        for (Token t : pTokens[i].get(city)) {
-                            // if so record them too
-                            tokens.add(t);
-                        }
-                    }
-
-                    // add the new token
-                    Token t = new Token(city, r.nextBoolean());
-                    tokens.add(t);
-
-                    pTokens[i].put(city, tokens);
-
-                    // remove a token from the city list, TODO remove the right token rather than any token
-                    ArrayList<Token> cT = locationTokens.get(city);
-                    cT.remove(0);
-
-                    locationTokens.put(city, cT);
-                }
-            }
-        }*/
     }
 
     /**
@@ -378,6 +347,13 @@ public class GameActivity extends AppCompatActivity {
 
         // for each active player draw their stuff
         for (int i = 0; i < playerNumber; i++) {
+
+            int count = 0;
+            for (Clue c : pClues[i]) {
+                if (c.isVisible()) {
+                    count++;
+                }
+            }
 
             Log.d("DRAWING", "PLAYER " + i);
 
@@ -405,20 +381,27 @@ public class GameActivity extends AppCompatActivity {
 
             // add the text and icons
             TextView tv = new TextView(this);
-            if (i%2 == 0) {
-                tv.setText("   Clues: " + pClues[i].size() + "  ");
+            if (i%2 == 0) { // for even players
+                tv.setText("   Clues: " + count + "  ");
             }
             tv.setTextColor(Color.WHITE);
             tv.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 
             // for each city in the players token collection
-            for (ArrayList<Token> t : pTokens[i].values()) {
+            for (ArrayList<Token> tokens : pTokens[i].values()) {
                 // name of the city
                 String name = "";
-                if (!t.isEmpty()) {name = t.get(0).getCity();}
+                if (!tokens.isEmpty()) {name = tokens.get(0).getCity();}
 
+                // get the number of revealed tokens
+                int revealedTokens = 0;
+                for (Token t : tokens) {
+                    if (t.isRevealed()) revealedTokens++;
+                }
+
+                Log.d("REVEALING: ", "CITY "  + name + " | NUM " + revealedTokens);
                 // append facedown icon and number
-                tv.append(addImageAsterisk(" ", t.size(), name));
+                tv.append(addImageAsterisk(" ", tokens.size(), name, i, revealedTokens));
             }
             tv.append("   ");
 
@@ -432,11 +415,11 @@ public class GameActivity extends AppCompatActivity {
             tv.setLayoutParams(lp2);
 
             // Adding the stuff to the RelativeLayout as a child
-            if (i%2 == 0) {
+            if (i%2 == 0) { // for even players
                 linearLayout.addView(btn);
                 linearLayout.addView(tv);
-            } else {
-                tv.append("Clues: " + pClues[i].size() + "   ");
+            } else { // for odd players
+                tv.append("Clues: " + count + "   ");
                 linearLayout.addView(tv);
                 linearLayout.addView(btn);
             }
@@ -466,15 +449,20 @@ public class GameActivity extends AppCompatActivity {
 
 
     public static final Integer[] DRAWABLE = new Integer[] {R.drawable.ornate_stop_25, R.drawable.ornate_stop_25_2, R.drawable.ornate_stop_25_3, R.drawable.ornate_stop_25_4};
+
     /**
      * Add an image into a string
      *
      * @param string - the text string
      * @param img - the image number
-     * @param name - the city name to display in the popup
+     * @param city - the city name to display in the popup
+     *
+     *        DETAILS FOR REVEALED TOKENS:
+     * @param player
+     * @param numRevealed
      * @return - the ouputed CharSeq containing all this data
      */
-    private CharSequence addImageAsterisk(String string, Integer img, String name) {
+    private CharSequence addImageAsterisk(String string, Integer img, String city, Integer player, Integer numRevealed) {
         final Context context = this;
         ImageSpan imageSpan = new ImageSpan(this, DRAWABLE[img-1], ImageSpan.ALIGN_BOTTOM);
         final SpannableString spannableString = new SpannableString(string);
@@ -484,12 +472,65 @@ public class GameActivity extends AppCompatActivity {
             public void onClick(View widget) {
 
                 AlertDialogPopup a = new AlertDialogPopup();
-                a.setupBuilder(null, "Location", DRAWABLE[img-1], img + " " + name + " tokens", Token.getImages(Token.getType(name)), context);
+
+                String text = img + " " + city + " tokens ";
+
+                a.setupBuilder(null, "Location", DRAWABLE[img-1], addRevealedTokenImages(text, player, city, numRevealed), Token.getImages(Token.getType(city)), context, pTokens[player]);
 
                 widget.invalidate();
+
+                // on dialog dismiss check if anything has changed
+                a.alertDialog.setOnDismissListener(dialog -> {
+                    if (a.allTokens != null) {
+                        Log.d("ALERT", "UPDATE");
+                        pTokens[player] = a.allTokens;
+                    }
+                });
+
             }
         },string.length()-1, string.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE); // this will add a clickable span and on click will delete the span and text
         return spannableString;
+    }
+
+    /**
+     * Inputs a variety of details and reveals those tokens in the string output
+     *
+     * @param text
+     * @param player
+     * @param city
+     * @param numRevealed
+     * @param token
+     * @return
+     */
+    private CharSequence addRevealedTokenImages(CharSequence text, Integer player, String city, Integer numRevealed, Integer token) {
+        SpannableString spannableString = new SpannableString(text);
+
+        // if there is anything to show
+        if (numRevealed > 0) {
+            Log.d("REVEALING ", " ANOTHER ONE " + city);
+            int img = R.drawable.active_false;
+            if (pTokens[player].get(city).get(token).getValue() == true) {
+                img = R.drawable.active_true;
+            }
+
+            ImageSpan imageSpan = new ImageSpan(this, img, ImageSpan.ALIGN_BOTTOM);
+            spannableString.setSpan(imageSpan, text.length() - 1, text.length(), 0);
+        }
+
+        return spannableString;
+    }
+    /*
+     * Helper method to construct the addRevealedTokenImages
+     */
+    private CharSequence addRevealedTokenImages(CharSequence text, Integer player, String city, Integer numRevealed) {
+        CharSequence total = null;
+
+        for (int i = 0; i < numRevealed; i++) {
+            Log.d("CHAR XXX SDS ", " " + total);
+            total = addRevealedTokenImages(text, player, city, numRevealed, 0);
+        }
+
+        return total;
     }
 
     /**

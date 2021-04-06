@@ -27,13 +27,20 @@ class Token implements Serializable {
             
     };
 
+    private boolean revealed; // can other players see the token
     private boolean value; // every token is either true or false
     private String city; // every token has a city name
 
     Token(String city, boolean value) {
         this.city = city;
         this.value = value;
+        this.revealed = false;
     }
+
+    public boolean isRevealed() {
+        return revealed;
+    }
+    public void setRevealed(boolean value) {this.revealed = value;}
 
     public boolean getValue() {
         return value;
