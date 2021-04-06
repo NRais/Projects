@@ -76,7 +76,10 @@ public class AlertDialogPopup {
 
                     // go find one
                     for (Token t : allTokens.get(city)) {
-                        if (!t.isRevealed()) t.setRevealed(true);
+                        if (!t.isRevealed()) {
+                            t.setRevealed(true);
+                            break;
+                        }
                     }
                 }
             }

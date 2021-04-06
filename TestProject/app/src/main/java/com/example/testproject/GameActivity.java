@@ -396,7 +396,7 @@ public class GameActivity extends AppCompatActivity {
                 // get the number of revealed tokens
                 int revealedTokens = 0;
                 for (Token t : tokens) {
-                    if (t.isRevealed()) revealedTokens++;
+                    if (t.isRevealed()) { revealedTokens++; }
                 }
 
                 Log.d("REVEALING: ", "CITY "  + name + " | NUM " + revealedTokens);
