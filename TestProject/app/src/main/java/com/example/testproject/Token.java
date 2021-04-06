@@ -102,4 +102,35 @@ class Token implements Serializable {
 
         return ints;
     }
+
+    /**
+     * Return a set of booleans for the terrain
+     *
+     * @param type
+     * @return
+     */
+    public static Boolean[] getTerrain(String[] type) {
+        Boolean[] terrains = new Boolean[4];
+
+        // for each terrain type
+        for (int i = 0; i < 4; i++) {
+
+            // default is false
+            boolean result = false;
+
+            // but we will go search it in the terrain list
+            for (String s : type) {
+
+                // if this item is in the list
+                if (s.equals(Clue.TYPES[i])) {
+                    // we change our result to true
+                    result = true;
+                }
+            }
+
+            terrains[i] = result;
+        }
+
+        return terrains;
+    }
 }

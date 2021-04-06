@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.function.Consumer;
@@ -39,58 +40,6 @@ public class GameActivity extends AppCompatActivity {
     HashMap<String, ArrayList<Token>> locationTokens = new HashMap<>();
     HashMap<String, ArrayList<Token>>[] pTokens;
     ArrayList<Clue>[] pClues;
-
-    /**
-     * Currently randomly assign tokens, TODO give out tokens based upon patterns, and generatedNumber
-     */
-    private void giveOutTokens() {
-        Random r = new Random();
-
-        // populate location tokens
-        for (String s : Token.CITIES) {
-            ArrayList<Token> list = new ArrayList<>();
-            list.add(new Token(s, r.nextBoolean()));
-            list.add(new Token(s, r.nextBoolean()));
-            list.add(new Token(s, r.nextBoolean()));
-            list.add(new Token(s, r.nextBoolean()));
-
-            locationTokens.put(s, list);
-        }
-
-        // for every player
-        for (int i = 0; i < playerNumber; i++) {
-            // give up to ten tokens
-            for (int j = 0; j < r.nextInt(5) + 2; j++) {
-
-                String city = Token.CITIES[r.nextInt(Token.CITIES.length-1)];
-
-                // if there are tokens left in the city
-                if (locationTokens.get(city).size() > 0) {
-                    ArrayList<Token> tokens = new ArrayList<>();
-
-                    // check if there are already tokens of this type for the player
-                    if (pTokens[i].containsKey(city)) {
-                        for (Token t : pTokens[i].get(city)) {
-                            // if so record them too
-                            tokens.add(t);
-                        }
-                    }
-
-                    // add the new token
-                    Token t = new Token(city, r.nextBoolean());
-                    tokens.add(t);
-
-                    pTokens[i].put(city, tokens);
-
-                    // remove a token from the city list, TODO remove the right token rather than any token
-                    ArrayList<Token> cT = locationTokens.get(city);
-                    cT.remove(0);
-
-                    locationTokens.put(city, cT);
-                }
-            }
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +86,24 @@ public class GameActivity extends AppCompatActivity {
             pTokens[i] = new HashMap<>();
             pClues[i] = new ArrayList<>();
         }
+
+        /*TESTING
+        HashMap<Boolean[], Integer> map = new HashMap<>();
+
+        Log.d("INIT", "INTIITITNITNITT");
+
+        for (int i = 0; i < 80000; i++) {
+            int n = generateNumber();
+
+            Boolean[] terrainBoolean = getTerrainTypes(n);
+
+            int z = map.getOrDefault(terrainBoolean, 0);
+            map.put(terrainBoolean, z+1);
+        }
+
+        for (Boolean[] b : CODES) {
+            Log.d("MAP RANDOM TEST OUTPUT ", "" + map.get(b));
+        }*/
 
         createGame(generatedNumber);
 
@@ -231,6 +198,7 @@ public class GameActivity extends AppCompatActivity {
             }
         }
     }
+
     /**
      * On enter or click do the loading stuff
      *
@@ -251,39 +219,154 @@ public class GameActivity extends AppCompatActivity {
                 playerDialog.cancel();
                 playerDialog.dismiss();
 
+                Log.d("INIT", "");
+
                 init();
             }
         }
     }
 
     /**
-     * TODO return number in the space of our game
-     *
-     * @return
+     * @return randomize a number 10000 to 99999
      */
     private Integer generateNumber() {
-        return 5;
+        return new Random().nextInt(89999) + 10000;
     }
 
 
     /**
-     *  TODO generate the game
+     *  generate the game
      */
     private void createGame(Integer gameNumber) {
 
-        Random r = new Random();
+        Boolean[] terrainBoolean = getTerrainTypes(gameNumber);
 
         for (ArrayList<Clue> clues : pClues) {
-            Log.d("PLAYER" , "NUMBER " + playerNumber);
+            Log.d("PLAYER " , "NUMBER " + playerNumber);
             for (int i = 0; i < playerNumber; i++) {
-                Clue c = new Clue(Clue.TYPES[i], r.nextBoolean(), false);
+                Clue c = new Clue(Clue.TYPES[i], terrainBoolean[i], false);
                 clues.add(c);
             }
         }
 
         // TODO currently giving out tokens to test
-        giveOutTokens();
+        giveOutTokens(terrainBoolean);
 
+    }
+
+    /**
+     * table of all possible boolean options for the game output
+     */
+    private static Boolean[][] CODES = {{true, true, true, true}, {true, true, true, false}, {true, true, false, true}, {true, true, false, false},
+                                        {true, false, true, true}, {true, false, true, false}, {true, false, false, true}, {true, false, false, false},
+                                        {false, true, true, true}, {false, true, true, false}, {false, true, false, true}, {false, true, false, false},
+                                        {false, false, true, true}, {false, false, true, false}, {false, false, false, true}, {false, false, false, false}};
+    /**
+     * return a list of the terrains in true or false form
+     *
+     * @param gameNumber - a number to generate the terrain
+     * @return - list of booleans for each terrain
+     */
+    private Boolean[] getTerrainTypes(Integer gameNumber) {
+
+        int[] digits = int_to_array(gameNumber);
+
+        // two big nums (+1 to ensure no out of bounds)
+        int num1 = digits[0]*100 + digits[1]*10 + digits[2] + 1;
+        int num2 = digits[3]*10 + digits[4] + 1;
+
+        // reduce the number of zero results
+        if (num1 % num2 == 0 && digits[4] < 4) {
+            num1 = num1 / num2;
+        }
+
+        // calculate city between 0 and 7
+        int result = num1%num2;
+
+        // ensure no out of bounds
+        while (result < 0 | result > 7) {
+            num1 += 7; // increase it
+            result = num1%num2;
+        }
+
+        // increase the number of 7's
+        if (num2 % (digits[0]*10+digits[1]+1) < 3) result = 7;
+
+        // then 50:50 it to between 0 and 15
+        if (digits[4] >= 5) result+=8;
+
+        return CODES[result];
+    }
+
+    /**
+     * Input an integer return a 5 digit array pad with zeros
+     *
+     * @param n
+     * @return
+     */
+    private static int[] int_to_array(int n) {
+        int j = 0;
+        int[] arr = {0,0,0,0,0};
+        while(n!=0)
+        {
+            arr[5-j-1] = n%10;
+            n=n/10;
+            j++;
+        }
+        return arr;
+    }
+
+    /**
+     * Currently randomly assign tokens, TODO give out tokens based upon patterns, and generatedNumber
+     */
+    private void giveOutTokens(Boolean[] gameTerrain) {
+
+        // populate location tokens
+        for (String s : Token.CITIES) {
+            ArrayList<Token> list = new ArrayList<>();
+            Boolean[] types = Token.getTerrain(Token.getType(s));
+
+            // if the terrain and the cities type are the same then we throw a check mark token
+            for (int i = 0; i < 4; i++) {
+                list.add(new Token(s, types[i] == gameTerrain[i]));
+            }
+
+            locationTokens.put(s, list);
+        }
+
+        // for every player
+        /*for (int i = 0; i < playerNumber; i++) {
+            // give up to ten tokens
+            for (int j = 0; j < r.nextInt(5) + 2; j++) {
+
+                String city = Token.CITIES[r.nextInt(Token.CITIES.length-1)];
+
+                // if there are tokens left in the city
+                if (locationTokens.get(city).size() > 0) {
+                    ArrayList<Token> tokens = new ArrayList<>();
+
+                    // check if there are already tokens of this type for the player
+                    if (pTokens[i].containsKey(city)) {
+                        for (Token t : pTokens[i].get(city)) {
+                            // if so record them too
+                            tokens.add(t);
+                        }
+                    }
+
+                    // add the new token
+                    Token t = new Token(city, r.nextBoolean());
+                    tokens.add(t);
+
+                    pTokens[i].put(city, tokens);
+
+                    // remove a token from the city list, TODO remove the right token rather than any token
+                    ArrayList<Token> cT = locationTokens.get(city);
+                    cT.remove(0);
+
+                    locationTokens.put(city, cT);
+                }
+            }
+        }*/
     }
 
     /**
