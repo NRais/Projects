@@ -29,6 +29,7 @@ public class AlertDialogPopup {
 
     // structure to store the id's of the image views to manipulate
     static final int[] ALERTIMAGEIDS = {R.id.dialog_imageview, R.id.dialog_imageview2, R.id.dialog_imageview3, R.id.dialog_imageview4};
+    static final int[] RADIOIMAGEIDS = {R.id.imageView2, R.id.imageView3, R.id.imageView4, R.id.imageView5};
 
     /**
      * Creates an alert with the given parameters
@@ -38,7 +39,7 @@ public class AlertDialogPopup {
      * @param c
      * @return
      */
-    public void setupBuilder(ArrayList<Clue> clues, String name, int drawable, CharSequence string, Integer[] images, Context c, HashMap<String, ArrayList<Token>> playerTokens) {
+    public void setupBuilder(ArrayList<Clue> clues, String name, int drawable, CharSequence string, Integer[] images, Context c, ArrayList<Token> revealedTokens, HashMap<String, ArrayList<Token>> playerTokens) {
         allTokens = playerTokens; // setup for value return
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(c);
@@ -63,33 +64,50 @@ public class AlertDialogPopup {
                     iv.setImageResource(images[i]);
                 }
             }
+            for (int i = 0; i < revealedTokens.size(); i++) {
+                ImageView iv = view.findViewById(RADIOIMAGEIDS[i]);
+
+                if (revealedTokens.get(i).getValue()) {
+                    iv.setImageResource(R.drawable.active_true);
+                } else {
+                    iv.setImageResource(R.drawable.active_false);
+                }
+            }
         }
         alertDialogBuilder.setIcon(drawable);
         alertDialogBuilder.setTitle(name);
-        alertDialogBuilder.setNeutralButton("Reveal 1 Token", (dialogInterface, i) -> {
-            // reveal token
-            if (allTokens != null) {
-                String city = string.toString().substring(string.toString().indexOf(" ") + 1, string.toString().indexOf(" tokens"));
+        if (allTokens != null && string != null && revealedTokens.size() < 4) {
+            alertDialogBuilder.setNeutralButton("Reveal 1 Token", (dialogInterface, i) -> {
+                // reveal token
+                //**Log.d("STRING ", "STRING" + string.toString() + " ");
+                //**Log.d("STRING ", "STRING" + (string.toString().indexOf(" ") + 1) + " " + string.toString().indexOf(" Tokens"));
 
-                // of there are tokens to reveal
-                if (!allTokens.get(city).isEmpty()) {
+                if (string.toString().contains(" ") & string.toString().contains(" Tokens")) {
+                    String city = string.toString().substring(string.toString().indexOf(" ") + 1, string.toString().indexOf(" Tokens"));
 
-                    // go find one
-                    for (Token t : allTokens.get(city)) {
-                        if (!t.isRevealed()) {
-                            t.setRevealed(true);
-                            break;
+                    // of there are tokens to reveal
+                    if (!allTokens.get(city).isEmpty()) {
+
+                        // go find one
+                        for (Token t : allTokens.get(city)) {
+                            if (!t.isRevealed()) {
+                                t.setRevealed(true);
+                                break;
+                            }
                         }
+
                     }
                 }
-            }
-            alertDialog.cancel();
-            alertDialog.dismiss();
-        });
-        /*alertDialogBuilder.setPositiveButton("Dismiss", (dialogInterface, i) -> {
-            alertDialog.cancel();
-            alertDialog.dismiss();
-        });*/
+                alertDialog.cancel();
+                alertDialog.dismiss();
+            });
+        } else {
+            alertDialogBuilder.setPositiveButton("Dismiss", (dialogInterface, i) -> {
+                alertDialog.cancel();
+                alertDialog.dismiss();
+            });
+        }
+
         alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }

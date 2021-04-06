@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.Spannable;
@@ -13,6 +15,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -33,7 +37,6 @@ import java.util.function.Consumer;
 public class GameActivity extends AppCompatActivity {
 
 
-    AlertDialog inputDialog = null;
     AlertDialog playerDialog = null;
     Integer playerNumber = 4;
     Integer generatedNumber = 0;
@@ -65,12 +68,15 @@ public class GameActivity extends AppCompatActivity {
         // OTHERWISE fire startup normally
         else {
 
+            generatedNumber = getIntent().getIntExtra("GAMENUMBER", -1);
+
+
+            Log.d("LOADING", " GSAME : " + generatedNumber);
+
             // generate consumer object that can be passed to the popup method
-            Consumer<EditText> generatorFunction = t -> fireGeneratorDialogue(t);
             Consumer<EditText> playerNumberFunction = t -> firePlayerCountDialogue(t);
 
             // display popups to get user input
-            //inputDialog = popup("Enter a game number", generatorFunction);
             playerDialog = popup("Enter a player count", playerNumberFunction);
         }
     }
@@ -88,7 +94,9 @@ public class GameActivity extends AppCompatActivity {
             pClues[i] = new ArrayList<>();
         }
 
-        generatedNumber = generateNumber();
+        if (generatedNumber < 0) {
+            generatedNumber = generateNumber();
+        }
 
         //TESTING
         /*HashMap<Boolean[], Integer> map = new HashMap<>();
@@ -169,38 +177,6 @@ public class GameActivity extends AppCompatActivity {
         return theDialog;
     }
 
-    /**
-     * On enter or click do the loading stuff for the inputDialogue
-     *
-     * @param inputField
-     */
-    private void fireGeneratorDialogue(EditText inputField) {
-        String number = inputField.getText().toString();
-
-        // if they enter nothing generate something for them
-        if (number.length() == 0) {
-            Log.d("LOG", "0 Length");
-            generatedNumber = generateNumber();
-
-            // hide it :)
-            inputDialog.cancel();
-            inputDialog.dismiss();
-        }
-        // otherwise check the thing is a number
-        else if (number.matches("-?\\d+")) {
-
-            try {
-                generatedNumber = Integer.parseInt(number);
-
-                // hide it :)
-                inputDialog.cancel();
-                inputDialog.dismiss();
-
-            } catch (Exception e) {
-                Log.e("ERROR", "failed to load what they input");
-            }
-        }
-    }
 
     /**
      * On enter or click do the loading stuff
@@ -241,6 +217,8 @@ public class GameActivity extends AppCompatActivity {
      *  generate the game
      */
     private void createGame(Integer gameNumber) {
+
+        Log.d("CREATING", " GSAME : " + gameNumber);
 
         Boolean[] terrainBoolean = getTerrainTypes(gameNumber);
 
@@ -435,9 +413,28 @@ public class GameActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Log.d("CGA", "onBackPressed Called");
+        Context context = this;
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
 
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+                        Intent intent = new Intent(context, MainActivity.class);
+                        startActivity(intent);
+
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //No button clicked
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage("Exit the game?  #" + generatedNumber).setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
     }
 
     public static RelativeLayout.LayoutParams defaultRLP() {
@@ -449,6 +446,7 @@ public class GameActivity extends AppCompatActivity {
 
 
     public static final Integer[] DRAWABLE = new Integer[] {R.drawable.ornate_stop_25, R.drawable.ornate_stop_25_2, R.drawable.ornate_stop_25_3, R.drawable.ornate_stop_25_4};
+    public static final Integer[] REVEALED_DRAWABLE = new Integer[] {R.drawable.ornate_stop_25_revealed, R.drawable.ornate_stop_25_2_revealed, R.drawable.ornate_stop_25_3_revealed, R.drawable.ornate_stop_25_4_revealed};
 
     /**
      * Add an image into a string
@@ -463,8 +461,15 @@ public class GameActivity extends AppCompatActivity {
      * @return - the ouputed CharSeq containing all this data
      */
     private CharSequence addImageAsterisk(String string, Integer img, String city, Integer player, Integer numRevealed) {
+
+        ImageSpan imageSpan;
+        if (numRevealed > 0)  {
+            imageSpan = new ImageSpan(this, REVEALED_DRAWABLE[img-1], ImageSpan.ALIGN_BOTTOM);
+        } else {
+            imageSpan = new ImageSpan(this, DRAWABLE[img-1], ImageSpan.ALIGN_BOTTOM);
+        }
+
         final Context context = this;
-        ImageSpan imageSpan = new ImageSpan(this, DRAWABLE[img-1], ImageSpan.ALIGN_BOTTOM);
         final SpannableString spannableString = new SpannableString(string);
         spannableString.setSpan(imageSpan, string.length()-1, string.length(), 0);
         spannableString.setSpan(new ClickableSpan() {
@@ -473,9 +478,17 @@ public class GameActivity extends AppCompatActivity {
 
                 AlertDialogPopup a = new AlertDialogPopup();
 
-                String text = img + " " + city + " tokens ";
+                // get the number of revealed tokens
+                ArrayList<Token> revealedTokens = new ArrayList<>();
+                for (Token t : pTokens[player].get(city)) {
+                    if (t.isRevealed()) {
+                        revealedTokens.add(t);
+                    }
+                }
 
-                a.setupBuilder(null, "Location", DRAWABLE[img-1], addRevealedTokenImages(text, player, city, numRevealed), Token.getImages(Token.getType(city)), context, pTokens[player]);
+                String text = img + " " + city + " Tokens " /*+ numRevealed + " revealed"*/;
+
+                a.setupBuilder(null, "Location", DRAWABLE[img-1], text, Token.getImages(Token.getType(city)), context, revealedTokens, pTokens[player]);
 
                 widget.invalidate();
 
@@ -493,52 +506,11 @@ public class GameActivity extends AppCompatActivity {
     }
 
     /**
-     * Inputs a variety of details and reveals those tokens in the string output
-     *
-     * @param text
-     * @param player
-     * @param city
-     * @param numRevealed
-     * @param token
-     * @return
-     */
-    private CharSequence addRevealedTokenImages(CharSequence text, Integer player, String city, Integer numRevealed, Integer token) {
-        SpannableString spannableString = new SpannableString(text);
-
-        // if there is anything to show
-        if (numRevealed > 0) {
-            Log.d("REVEALING ", " ANOTHER ONE " + city);
-            int img = R.drawable.active_false;
-            if (pTokens[player].get(city).get(token).getValue() == true) {
-                img = R.drawable.active_true;
-            }
-
-            ImageSpan imageSpan = new ImageSpan(this, img, ImageSpan.ALIGN_BOTTOM);
-            spannableString.setSpan(imageSpan, text.length() - 1, text.length(), 0);
-        }
-
-        return spannableString;
-    }
-    /*
-     * Helper method to construct the addRevealedTokenImages
-     */
-    private CharSequence addRevealedTokenImages(CharSequence text, Integer player, String city, Integer numRevealed) {
-        CharSequence total = null;
-
-        for (int i = 0; i < numRevealed; i++) {
-            Log.d("CHAR XXX SDS ", " " + total);
-            total = addRevealedTokenImages(text, player, city, numRevealed, 0);
-        }
-
-        return total;
-    }
-
-    /**
      * Method to kill the initial popup dialogue
      */
     private void kill() {
-        inputDialog.cancel();
-        inputDialog.dismiss();
+        playerDialog.cancel();
+        playerDialog.dismiss();
 
         finish();
 

@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -103,7 +104,7 @@ public class PlayerActivity extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
             AlertDialogPopup a = new AlertDialogPopup();
-            a.setupBuilder(clues[playerNum], "Clues:", R.drawable.book, null, null, this, null);
+            a.setupBuilder(clues[playerNum], "Clues:", R.drawable.book, null, null, this, null,null);
         });
 
         // SETUP floating action button for HELP ------
@@ -158,9 +159,19 @@ public class PlayerActivity extends AppCompatActivity {
                 Context context = this;
                 background.setOnClickListener(v -> {
 
+                    // get the number of revealed tokens
+                    ArrayList<Token> revealedTokens = new ArrayList<>();
+                    int numTokens = 0;
+                    for (Token t : location) {
+                        if (t.isRevealed()) {
+                            numTokens++;
+                            revealedTokens.add(t);
+                        }
+                    }
+
                     AlertDialogPopup a = new AlertDialogPopup();
-                    SpannableString spannableString = new SpannableString(location.size() + " " + name + " tokens");
-                    a.setupBuilder(null, "Location", GameActivity.DRAWABLE[location.size()-1], spannableString, Token.getImages(Token.getType(name)), context, tokens[playerNum]);
+                    SpannableString spannableString = new SpannableString(location.size() + " " + name + " Tokens " /*+ numTokens + " revealed"*/);
+                    a.setupBuilder(null, "Location", GameActivity.DRAWABLE[location.size()-1], spannableString, Token.getImages(Token.getType(name)), context, revealedTokens, tokens[playerNum]);
 
                     // on dialog dismiss check if anything has changed
                     a.alertDialog.setOnDismissListener(dialog -> {
