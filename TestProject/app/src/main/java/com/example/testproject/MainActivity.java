@@ -3,18 +3,15 @@ package com.example.testproject;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    EditText et;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +22,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         playButton.setOnClickListener(this);
 
+        et = findViewById(R.id.editText);
+
+        et.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    // check if its a valid thing
+                    if (!et.getText().toString().matches("-?\\d+")) {
+                        // IF NOT clear
+                        et.setText("");
+                    }
+                }
+            }
+        });
 
         // add these two lines, if you wish to close the app:
         //finishAffinity();
@@ -41,6 +52,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // if the survey button is clicked!
 
                 i = new Intent(this, GameActivity.class); // we intend to have the onClick listener of our view launch our give survey activity
+
+                if (et.getText().toString().matches("-?\\d+")) {
+                    i.putExtra("GAMENUMBER", Integer.parseInt(et.getText().toString()));
+                }
 
                 startActivity(i);
 
