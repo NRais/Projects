@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 i = new Intent(this, GameActivity.class); // we intend to have the onClick listener of our view launch our give survey activity
 
                 if (et.getText().toString().matches("-?\\d+")) {
+                    Log.d("PUTTING", " g " + et.getText());
                     i.putExtra("GAMENUMBER", Integer.parseInt(et.getText().toString()));
                 }
 

@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.Spannable;
@@ -15,7 +13,6 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -25,11 +22,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.function.Consumer;
@@ -53,6 +48,8 @@ public class GameActivity extends AppCompatActivity {
         // load data from intent
         Bundle bundleOfTokens = getIntent().getBundleExtra("BUNDLE");
 
+        generatedNumber = getIntent().getIntExtra("GAMENUMBER", -1);
+
         // IF WE RECEIVED DATA load it
         if (bundleOfTokens != null) {
 
@@ -67,9 +64,6 @@ public class GameActivity extends AppCompatActivity {
         }
         // OTHERWISE fire startup normally
         else {
-
-            generatedNumber = getIntent().getIntExtra("GAMENUMBER", -1);
-
 
             Log.d("LOADING", " GSAME : " + generatedNumber);
 
@@ -227,6 +221,7 @@ public class GameActivity extends AppCompatActivity {
             for (int i = 0; i < playerNumber; i++) {
                 Clue c = new Clue(Clue.TYPES[i], terrainBoolean[i], false);
                 clues.add(c);
+                Collections.shuffle(clues);
             }
         }
 
@@ -347,6 +342,7 @@ public class GameActivity extends AppCompatActivity {
             btn.setOnClickListener(v -> {
                 Intent intent = new Intent(this, PlayerActivity.class);
                 intent.putExtra("PLAYER", finalI);
+                intent.putExtra("GAMENUMBER", generatedNumber);
                 Bundle args = new Bundle();
                     args.putSerializable("PLAYER_NUMBER", playerNumber);
                     args.putSerializable("PLAYER_TOKENS", pTokens);
@@ -488,7 +484,8 @@ public class GameActivity extends AppCompatActivity {
 
                 String text = img + " " + city + " Tokens " /*+ numRevealed + " revealed"*/;
 
-                a.setupBuilder(null, "Location", DRAWABLE[img-1], text, Token.getImages(Token.getType(city)), context, revealedTokens, pTokens[player]);
+                // NOTE: final argument null ensures that "Reveal 1 Token" button isnt available in main menu
+                a.setupBuilder(null, "Location", DRAWABLE[img-1], text, Token.getImages(Token.getType(city)), context, revealedTokens, null);
 
                 widget.invalidate();
 

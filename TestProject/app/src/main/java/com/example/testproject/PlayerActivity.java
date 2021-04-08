@@ -41,6 +41,7 @@ public class PlayerActivity extends AppCompatActivity {
 
     Integer playerNum;
     Integer totalPlayers;
+    Integer generatedNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class PlayerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_player);
 
         // load data from intent
+        generatedNumber = getIntent().getIntExtra("GAMENUMBER", -100);
         playerNum = getIntent().getIntExtra("PLAYER", -100);
         Bundle bundleOfTokens = getIntent().getBundleExtra("BUNDLE");
         clues = (ArrayList<Clue>[])bundleOfTokens.getSerializable("CLUES");
@@ -119,6 +121,7 @@ public class PlayerActivity extends AppCompatActivity {
         Log.d("CDA", "onBackPressed Called");
 
         Intent intent = new Intent(this, GameActivity.class);
+        intent.putExtra("GAMENUMBER", generatedNumber);
         Bundle args = new Bundle();
             args.putSerializable("PLAYER_NUMBER", totalPlayers);
             args.putSerializable("PLAYER_TOKENS", tokens);
