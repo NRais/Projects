@@ -216,9 +216,11 @@ public class GameActivity extends AppCompatActivity {
 
         Boolean[] terrainBoolean = getTerrainTypes(gameNumber);
 
+        // for each player
         for (ArrayList<Clue> clues : pClues) {
             Log.d("PLAYER " , "NUMBER " + playerNumber);
-            for (int i = 0; i < playerNumber; i++) {
+            // give out 4 clues
+            for (int i = 0; i < 4; i++) {
                 Clue c = new Clue(Clue.TYPES[i], terrainBoolean[i], false);
                 clues.add(c);
                 Collections.shuffle(clues);
