@@ -12,17 +12,17 @@ class Token implements Serializable {
             {}, // campaign hall
             {Clue.TYPES[0], Clue.TYPES[1], Clue.TYPES[3]}, // coms array
             {Clue.TYPES[1], Clue.TYPES[2]}, // covern military
-            {Clue.TYPES[0], Clue.TYPES[1], Clue.TYPES[3]}, // elis north
+            {Clue.TYPES[0], Clue.TYPES[2], Clue.TYPES[3]}, // elis north
             {Clue.TYPES[1], Clue.TYPES[3]}, // elscon
             {Clue.TYPES[3]}, // glinsmire
             {Clue.TYPES[0], Clue.TYPES[2]}, // glinnin forest
             {Clue.TYPES[0], Clue.TYPES[1]}, // helston stopfare
             {Clue.TYPES[0], Clue.TYPES[1], Clue.TYPES[2]}, // keep
             {Clue.TYPES[2], Clue.TYPES[3]}, // levington
-            {Clue.TYPES[0], Clue.TYPES[1], Clue.TYPES[2], Clue.TYPES[3]}, // quor
             {Clue.TYPES[1], Clue.TYPES[2], Clue.TYPES[3]}, // new valden
             {Clue.TYPES[0], Clue.TYPES[3]}, // northixe
             {Clue.TYPES[1]}, // northern settlement
+            {Clue.TYPES[0], Clue.TYPES[1], Clue.TYPES[2], Clue.TYPES[3]}, // quor
             {Clue.TYPES[2]}, // ruins of talmon
             
     };

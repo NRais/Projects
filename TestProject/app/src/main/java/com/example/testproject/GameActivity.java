@@ -227,7 +227,6 @@ public class GameActivity extends AppCompatActivity {
             }
         }
 
-        // TODO currently giving out tokens to test
         giveOutTokens(terrainBoolean);
 
     }
