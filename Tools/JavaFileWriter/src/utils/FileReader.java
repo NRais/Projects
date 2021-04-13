@@ -8,30 +8,43 @@ import java.util.Scanner;
 
 public class FileReader {
 
-    public static void main(String[] args) {
-        run();
-    }
-
     /*
      * Launcher
      */
-    public static ArrayList<String> run() {
-        ArrayList<String> lines = new ArrayList<>();
+    public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
 
-        String s = "";
+        String s = prompt(sc);
         while (!s.toLowerCase().equals("exit")) {
 
-            System.out.println("Filename? ");
-            s = sc.next();
+            System.out.println(" " + readFile(new File(s)));
 
-            File file = new File(s);
-            lines = readFile(file);
+            s = prompt(sc);
+        }
+
+    }
+
+    /**
+     * Initialize a file-reader via console input
+     *
+     * @return
+     */
+    public static ArrayList<String> run() {
+
+        Scanner sc = new Scanner(System.in);
+
+        String s = prompt(sc);
+        // prompt until they give a valid filename
+        while (!(new File(s).exists())) {
+
+            System.out.println("Invalid filename");
+            s = prompt(sc);
 
         }
 
-        return lines;
+        File file = new File(s);
+        return readFile(file);
     }
 
     /**
@@ -50,6 +63,8 @@ public class FileReader {
             String line = reader.readLine();
             while (line != null) {
                 theFilesContents.add(line);
+
+                line = reader.readLine();
             }
 
             reader.close();
@@ -59,5 +74,16 @@ public class FileReader {
         }
 
         return theFilesContents;
+    }
+
+    /**
+     * Prompt the user and return input
+     *
+     * @param sc
+     * @return
+     */
+    private static String prompt(Scanner sc) {
+        System.out.println("Filename to Read: ");
+        return sc.nextLine();
     }
 }
