@@ -7,29 +7,29 @@ import java.util.Scanner;
 
 public class FileWriter {
 
-    public static void main(String[] args) {
-        run(args[0]);
-    }
-
     /*
      * Launcher
+     */
+    public static void main(String[] args) {
+
+        run(args[0]);
+
+    }
+
+    /**
+     * Initialize a file-writer via console input
+     *
+     * @param input
      */
     public static void run(String input) {
         Scanner sc = new Scanner(System.in);
 
-        String s = "";
-        while (!s.toLowerCase().equals("exit")) {
+        String s = prompt(sc); // get file to write to
 
-            System.out.println("Filename? ");
-            s = sc.next();
-
-            String string = input;
-
-            File file = new File(s);
-            writeFile(file, string);
-
-        }
-
+        if ( writeFile(new File(s), input) )
+            System.out.println("WRITING DATA: <-----" + input + "----->");
+        else
+            System.out.println("ERROR WRITING");
     }
 
     /**
@@ -38,21 +38,37 @@ public class FileWriter {
      * @param file
      * @param lines
      */
-    private static void writeFile(File file, String lines) {
+    private static boolean writeFile(File file, String lines) {
         try {
 
             boolean result = file.createNewFile();
 
-            if (result == false) {System.out.println("File exists already!"); return;}
+            if (result == false) {System.out.println("File exists already!"); return false;}
 
             BufferedWriter bufferedWriter = new BufferedWriter(new java.io.FileWriter(file));
 
             bufferedWriter.write(lines);
 
             bufferedWriter.close();
+
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
+
+        return true;
+    }
+
+
+    /**
+     * Prompt the user to input a filename
+     *
+     * @param sc
+     * @return
+     */
+    private static String prompt(Scanner sc) {
+        System.out.println("Filename to Write: ");
+        return sc.nextLine();
     }
 
 }
