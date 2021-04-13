@@ -4,6 +4,8 @@ import utils.FileReader;
 import utils.FileWriter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 import java.util.Scanner;
 
 public class CompA2StopLights {
@@ -25,6 +27,8 @@ public class CompA2StopLights {
 
         input = parseData(input);
 
+        System.out.println("LOADED FILE");
+
         // concat the file, inserting the stoplight data
         String text = "";
         for (String s : input) {
@@ -32,6 +36,8 @@ public class CompA2StopLights {
         }
 
         FileWriter.run(text);
+
+        System.out.println("CREATED OUTPUT DATA FILE");
     }
 
 
@@ -63,8 +69,22 @@ public class CompA2StopLights {
 
         Integer numberID = Integer.parseInt(id);
 
+        // TEST GRAPH //
+        HashMap<Integer, Node> graph = new HashMap<>();
+        graph.put(numberID, new Node());
+
         Node thisStop = graph.get(numberID);
 
         return thisStop.getRoadStopLightData();
+    }
+
+    /*
+     * TEST TEMPLATE
+     */
+    static class Node {
+        public Integer getRoadStopLightData() {
+            Random r = new Random();
+            return r.nextInt(2);
+        }
     }
 }
