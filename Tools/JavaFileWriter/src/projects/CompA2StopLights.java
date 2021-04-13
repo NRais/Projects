@@ -32,7 +32,7 @@ public class CompA2StopLights {
         // concat the file, inserting the stoplight data
         String text = "";
         for (String s : input) {
-            text = text + " " + isThisAStopLight(s) + "\n" + s;
+            text = text + s + " " + isThisAStopLight(s) + "\n";
         }
 
         FileWriter.run(text);
@@ -84,7 +84,7 @@ public class CompA2StopLights {
     static class Node {
         public Integer getRoadStopLightData() {
             Random r = new Random();
-            return r.nextInt(2);
+            return r.nextInt(3);
         }
     }
 }
