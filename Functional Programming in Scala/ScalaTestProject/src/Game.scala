@@ -39,9 +39,9 @@ class Game {
             printBoard(oldBoard)
 
             if (player == 2) {
-                println(name2 + " (2) would you like to place a piece (ex. 1,3):")
+                println(name2 + " (2) would you like to place a piece (ex. 1,2):")
             } else {
-                println(name + " (1) would you like to place a piece (ex. 1,3):")
+                println(name + " (1) would you like to place a piece (ex. 1,2):")
             }
 
             val input = validateInput(readLine())
@@ -99,6 +99,12 @@ class Game {
                 val secondInt = Integer.parseInt("" + input.charAt(input.length-1))
 
                 //**println("Success + " + firstInt + " " + secondInt)
+
+                // invalid position
+                if (firstInt < 0 | secondInt < 0 | firstInt > 2 | secondInt > 2) {
+                    println("Fail, try again");
+                    Array(-1,-1);
+                }
 
                 Array(firstInt, secondInt)
 
