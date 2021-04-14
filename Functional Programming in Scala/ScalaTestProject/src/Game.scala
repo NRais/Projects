@@ -137,8 +137,13 @@ class Game {
 
     def printBoard(board : Array[Array[Int]]) = {
 
+        println("     0 1 2")
+        println("     _____")
+
+
         // search every space on the board
         for (i <- 0 until 3) {
+            print(i + " |  ")
             for (j <- 0 until 3) {
 
                 print(board(i)(j) + " ") // print space
