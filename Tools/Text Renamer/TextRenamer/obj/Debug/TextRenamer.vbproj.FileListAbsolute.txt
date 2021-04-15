@@ -1,0 +1,6 @@
+C:\Users\Nuser\Documents\SharpDevelop Projects\TextRenamer\TextRenamer\obj\Debug\TextRenamer.vbprojResolveAssemblyReference.cache
+C:\Users\Nuser\Documents\SharpDevelop Projects\TextRenamer\TextRenamer\bin\Debug\TextRenamer.exe.config
+C:\Users\Nuser\Documents\SharpDevelop Projects\TextRenamer\TextRenamer\bin\Debug\TextRenamer.exe
+C:\Users\Nuser\Documents\SharpDevelop Projects\TextRenamer\TextRenamer\bin\Debug\TextRenamer.pdb
+C:\Users\Nuser\Documents\SharpDevelop Projects\TextRenamer\TextRenamer\obj\Debug\TextRenamer.exe
+C:\Users\Nuser\Documents\SharpDevelop Projects\TextRenamer\TextRenamer\obj\Debug\TextRenamer.pdb
