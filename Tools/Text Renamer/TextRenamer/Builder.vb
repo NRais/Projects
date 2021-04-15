@@ -12,7 +12,7 @@ Public Class Builder
 	Dim aL As String
 	Dim aR As String
 	
-	Dim changes As Boolean = false ' boolean so we don't loop forever once we are done
+	Dim changes As Boolean = false ' boolean so we don't loop through the Mod's forever once we are done
 
 	' to allow for good string manipulation we have this advanced class
 	' this class 'Builds' the filename out of the advanced tags used
@@ -22,19 +22,29 @@ Public Class Builder
 	' ADVANCED TAGS INCLUDE:
 	'  < STRINGS FOR EDITING >
 	'  - ^{{FILE_NAME}} - to allow the user to insert the files original name
-	'  - ^{{FILES_EXTENSION}} - to insert the files original extension (without dot)
+	'  - ^{{FILES_EXTENSION}} - to insert the files original extension (*without dot)
 	'  - {{<X<}} - everything to the left of X in the file name
 	'  - {{>X>}} - everything to the right of X in the file name
 	'  - ^{{DIRECTORY_NAME}} - to insert the files original directory name (no /'s)
-	'  - ^{{PATH_TO_FILE}} - to insert the files original path (SHOULD NOT BE USED IN A FILE NAME)
-	'  - ^{{NEW_LINE}} - to insert a new line (SHOULD NOT BE USED IN A FILE NAME)
+	'  - ^{{PATH_TO_FILE}} - to insert the files original path 					*(SHOULD NOT BE USED IN A FILE NAME)
+	'  - ^{{NEW_LINE}} - to insert a new line 									*(SHOULD NOT BE USED IN A FILE NAME)
 	'  - ^{{TOTAL_NUMBER}} - an integer of the total count of files EDITED
 	'  - ^{{FILE_NUMBER}} - an integer of the count of the files EDITED in the current folder
-	'  - NOTE: buffer chars (ex. 009) should be optional in the above two methods
+	'  - NOTE: buffer chars should be optional in the above two methods (ex. two buffer 0's -> 009)
 	
 	'  - ^{{DATE_YEAR}} - current clock
 	'  - ^{{DATE_MONTH}} - current clock
-	'  - ^{{DATE_DAY}} - current clock
+	'  - ^{{DATE_DAY}} - current clock	
+	
+	' < FOR SEARCHING >
+	'  - {{*}} - anything that can be converted into a character (so pretty much everything)
+	'  - {{#}} - anything that can be converted into an integer 
+	'  - {{A}} - any normal alphebetical letter
+	'  - {{!#}} - nothing that can be converted into an integer
+	'  - {{!A}} - nothing that can be converted into an alphebetical letter
+	'
+	' NOTE: John{{@}}{{@}}{{@}}John  -> will find "John123John" & "JohnKKKJohn" & not "JohnJohn"
+	' NOTE: John{{!#}} -> will find "JohnTT" & "JohnT5" & "John#RER" & not "John7TER"
 	
 	' < GENERIC MODIFICATIONS >
 	'  - NOTE: Generic options can be included ONCE each in any part of the string (they will be removed and their action will be applied)
@@ -50,10 +60,7 @@ Public Class Builder
 	
 	'  - {{TRIM_@}} - at the end all @ chars will be removed from the start and end of the string
 	'  - {{SWAP_@}} - at the end all the characters after @ will be swapped with all the characters before it (SHOULD NOT BE USED IF MORE THAN ONE @ char exists)
-	
-	' < FOR SEARCHING >
-	'  - {{LENGTH_##}} - if their are ## chars in the string (For example: John{{LENGTH_15}} if their are 15 chars following a occurance of "John")
-	'  - {{##}} - everything that can be converted to a number that is next to eachother (For example: John{{##}} on John334Tyson.txt and ABigJohn2.txt but not JohnT88.txt)
+
 	
 	' EDIT FUNCTION: to allow user to insert aspects into their strings
 	Public Function EditName(currentString As String, item As FileInfo) As String
@@ -62,7 +69,7 @@ Public Class Builder
 		aR = MainProgram.MySettings.advCharR
 		
         currentString = replaceAforB(currentString, aL &  "FILE_NAME" 				& aR, Path.GetFileNameWithoutExtension(item.Name))
-        currentString = replaceAforB(currentString, aL &  "FILES_EXTENSION" 		& aR, item.Extension)
+        currentString = replaceAforB(currentString, aL &  "FILE_EXTENSION" 			& aR, (item.Extension).Replace(".", ""))
         currentString = replaceAforB(currentString, aL &  "DIRECTORY_NAME" 			& aR, item.Directory.Name)
         currentString = replaceAforB(currentString, aL &  "PATH_TO_FILE" 			& aR, item.DirectoryName)
         currentString = replaceAforB(currentString, aL &  "FILE_NUMBER" 			& aR, CStr(MainProgram.MySettings.file_count))
@@ -80,7 +87,7 @@ Public Class Builder
     Public Function ModName(currentString As String, item As FileInfo) As String
     
 		' loop through all of these repeatedly until they have all been resolved
-		' the reason we do this is because we want to apply them in the order the are found
+		' the reason we do this is because we want to apply them in the order they are found
 		Do While (currentString.Contains(aL) And currentString.Contains(aR) And changes = false)
 			changes = false 'reset change counter, if it is still false at the end we will stop because nothing is being done
 		
@@ -103,46 +110,90 @@ Public Class Builder
     End Function
     
     
-    
-    
-    
-    
-    
-    
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''
+    '''''''''''''''''''' TOOOOOOOLS ''''''''''''''''''''
     
     
     Function replaceAforB(theString As String, findString As String, replacementString As String) As String
         
-        ' if there is any occurances to edit then do so
-        If theString.contains(findString) Then
+        ' this is the REPLACEMENT function
+        ' It finds occurances and replaces them with the correct data
+        ' It is primarily used for replacing macros with their required code (ex. {{FILE_NAME}} -> John)
         
-	        ' cut the array into pieces seperated by the string
-	        Dim tempArray() As String = theString.Split(findString.ToCharArray, StringSplitOptions.None)
-	        Dim tempString As String = ""
-	        
-	        ' for each of the parts of the string
-	        For i = 0 To tempString.length - 1
-	        
-	        	' if it is within the range being searched
-	        	If (i > MainProgram.MySettings.findOccurance(0)) And (i < MainProgram.MySettings.findOccurance(1)) Then
-					' then add on that section of the string, AND the replacement
-					tempString = tempString + tempArray(i) + replacementString
-				Else	
-					' otherwise add on that section of the string, AND the old thing (un-replaced)
-					tempString = tempString + tempArray(i) + findString
-				End If
-	        Next
-	        
-	        theString = tempString
-	        
-	    End If
+        ' It takes 3 arguments (String to check for replacements, Macro to find, Data to insert in those locations)
+        ' the reason it is so complicated and not just a simple Replace is because it accomadates replacing only certain occurances of a string for example 2nd - 4th occurance
         
-        ' OLD METHOD
-        'If (MainProgram.MySettings.findOccurance(1) = -1) Then
-        '	' then find all the occurances and replace
-        '	theString = theString.replace(findString, replacementString)
-        'End If
+        ' _-----------_
+        '
+        ' _           _
+        '  -----------
         
+        ' THREE STEPS '
+        ' 1. - Check if there are any occurances so we don't waste time
+        
+        ' 2. - skip through the string until our starting occurance
+        
+        ' 3. - replace the correct number of occurances after that
+        
+        If theString.contains(findString) Then   ' #1#
+        
+        	Console.WriteLine("IN")
+        
+        	Dim startingIndex As Integer = 0
+        	' the first occurance we want to replace (for example it may be the 2nd)
+        	Dim startingOccurance As Integer = MainProgram.MySettings.findOccurance(0)
+        	' the number of occurances we want to replace (for example it may be 3)
+        	' we do a +1 because it is inclusive for example 2-4 is 3 total replacements 2,3,4 (even normally though 4-2 = 2)
+        	Dim totalReplacements As Integer = 1 + MainProgram.MySettings.findOccurance(1) - MainProgram.MySettings.findOccurance(0)
+        
+        	' Check if all replacements are being done (if so then specify that)
+        	If (MainProgram.MySettings.findOccurance(1) = -1) Then
+        		' then instead just set it to -1 which means all
+        		totalReplacements = -1
+        	End If
+        
+        	Console.WriteLine("* Finding " & findString & " in STRING: " & theString)
+        
+        	' #########2#########
+        	' establish starting occurance
+        	' IF WE ARE RUNNING AN ADVANCED TAG WE WILL NOT DO THIS
+        	If Not (findString.Contains(aL) And findString.Contains(aR)) Then
+        	
+        		Console.WriteLine("* NOT ADVANCED applying filters: Start " & startingOccurance & " , Total " & totalReplacements)
+        	
+        		' check what our starting index is going to be
+        		' (for Advanced Tag we will change everything)
+        		startingIndex = GetNthIndexStringFunc(theString, findString, startingOccurance)
+        	
+        	End If
+        	        	
+        	' #########3#########
+        	' replace all following occurances using the Strings.Replace function
+        	' Note: the replace function takes the following arguments:
+        	' *expression* 	- theString
+        	' *find* 		- findString
+    		' *replace* 	- replacementString
+        	' *start* 		- startingIndex
+        	' *count* 		- totalReplacements
+        	
+        	' NOTE: startingIndex +1 because it starts with 1 as the first letter of the string (i think)
+        	' ***** '
+        	' The new string will be:
+        	' A. the string up to the Starting index [no change will be made]
+        	' B. the string after the Starting index [it will be searched for replacements]
+        	
+        	' NOTE: only search and replace if we have a valid starting index
+        	If Not (startingIndex = -1) Then
+        		' RUN the Replacement
+        		theString = theString.Substring(0, startingIndex) & Replace(theString, findString, replacementString, startingIndex + 1, totalReplacements)
+        	
+        		Console.WriteLine("* Result: {0}", theString)
+        	Else
+        		' otherwise
+        		Console.WriteLine("* No Valid Starting Index for searching the string: " & theString)
+        	End If
+        End If
+                
         Return theString
     End Function
     
@@ -157,5 +208,54 @@ Public Class Builder
    		
    		return theString
    	End Function
+   	
+   	
+   	'''''''''''''''''''
+   	' EXTRA FUNCTIONS '
+   	'''''''''''''''''''
+   	
+   	' NOTE: works with everything that does not include "~" !!!!!!!! NOTE !!!!!!!!!
+   	'
+   	' NOTE: this finds overlapping indexs:
+   	'
+   	'		ToKiaiKaiaKs
+   	'
+   	' Will return index = 7 as the 2nd index
+   	
+   	' --HOWEVER--
+   	' The String.Replace() Function will act as if there is only 1 occurance in total (not 2) and will replace the first one (and never see the second)
+   	'
+   	' This is okay as long as you remember that this happens
+   	
+   	 Public Function GetNthIndexStringFunc(search As String, find As String, index As Integer) As Integer
+		' NOTE: we must try and find at least the 1st occurance
+		Dim x As Integer = -1 ' if nothing is found then this will be returned
+						
+		' for each occurance down to the nth, while they are still occurances
+		Do While index > 0 And search.contains(find)
+		
+			' get the index of the occurnace
+			x = search.IndexOf(find)
+		
+	        
+	        ' then modify the first character of that index (so it no long is the first index)
+	        
+	        ' Our new string is the old string up the the start of our find occurance
+	        ' & the tilde character (instead of whatever used to be there)
+	        ' & the rest of our string after wards
+	        search = search.Substring(0, search.IndexOf(find)) & "~" & search.Substring(search.IndexOf(find) + 1)
+	        	       	
+	       	' then decrement the counter and loop again
+	       	index = index - 1
+       	Loop
+       	
+       	' If we actually got through until our index then good otherwise return a -1
+       	If (index = 0) Then
+			Return x
+		Else
+			Return -1
+		End If
+	    
+    End Function
 	
 End Class

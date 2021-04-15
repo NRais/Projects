@@ -18,15 +18,22 @@ Public Class Searcher
 	
 		FileList = new List(Of FileInfo)
 		
-		' get all stuff from directory and subdirectory (all stuff that matches the Extension specified)
-		' CRITERIA 1. Extension must match
-		' (note: this will return files and folders)
-		eachFileInMydirectory = IO.Directory.GetFileSystemEntries(MainProgram.MySettings.FindDirectory, "*" & MainProgram.MySettings.FindExtension, SearchOption.AllDirectories)
-		'.Where(s => s.EndsWith(".txt", StringComparison.OrdinalIgnoreCase) || s.EndsWith(".doc", StringComparison.OrdinalIgnoreCase));
-				
-		StoreFileObjects()
+		' CHECK DIRECTORY
+		If Directory.Exists(MainProgram.MySettings.FindDirectory) Then
 		
-		RemoveFilesThatDontMatch()
+			' get all stuff from directory and subdirectory (all stuff that matches the Extension specified)
+			' CRITERIA 1. Extension must match
+			' (note: this will return files and folders)
+			eachFileInMydirectory = IO.Directory.GetFileSystemEntries(MainProgram.MySettings.FindDirectory, "*" & MainProgram.MySettings.FindExtension, SearchOption.AllDirectories)
+			'.Where(s => s.EndsWith(".txt", StringComparison.OrdinalIgnoreCase) || s.EndsWith(".doc", StringComparison.OrdinalIgnoreCase));
+					
+			StoreFileObjects()
+			
+			RemoveFilesThatDontMatch()
+			
+		Else
+			' NO SUCH DIRECTORY
+		End If
 		
 		Return FileList
 	End Function
@@ -81,10 +88,18 @@ Public Class Searcher
 	Function MeetsCriteria(i As Integer) As Boolean
 		Dim correct As Boolean = true
 		
-		' TODO CRITERIA
+		' call the builder
+		Dim build As Builder = new Builder
+		' the builder will convert any edits such as {INT_INDEX} into actual values
+		
+		' ## Console.WriteLine("FILTER : " & MainProgram.MySettings.FindFilter & " , ITEM : " & FileList.Item(i).Name)
+		
+		Dim newReplaceString As String = build.EditName(MainProgram.MySettings.FindFilter, FileList.Item(i))
+		
+		' TODO TODO CRITERIA
 		
 		' CRITERIA 2. File name must match
-		If  Not (FileList.Item(i).Name).Contains(MainProgram.MySettings.FindFilter) Then
+		If  Not (FileList.Item(i).Name).Contains(newReplaceString) Then
 			
 			' REMOVE FILE
 			correct = false		

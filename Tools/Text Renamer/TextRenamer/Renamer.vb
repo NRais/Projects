@@ -27,23 +27,39 @@ Public Class Renamer
 		'''
 		' FOR EACH FILE/FOLDER IN THE LIST OF FILES
 		For i As Integer = 0 To (FileList.Count - 1)
-		
+				
 			' update the counters
-			MainProgram.MySettings.total_count = i
-			MainProgram.MySettings.file_count = i
+			' (the counters +1 to start at 1)
+			MainProgram.MySettings.total_count = MainProgram.MySettings.total_count + 1
+			MainProgram.MySettings.file_count = MainProgram.MySettings.file_count + 1
+			
+			' if the directory has changed reset the counter
+			' (don't check the first one)
+			If Not i = 0 Then
+				If Not FileList.Item(i).Directory.Name = FileList.Item(i-1).Directory.Name Then
+					MainProgram.MySettings.file_count = 1			
+				End If
+			End If
+			'' -------------- '' 
+			
+			Dim isFolder As Boolean = FileList.Item(i).Attributes().HasFlag(FileAttributes.Directory)
 			
 			' CHECK FOR READING AND EDITING FILE CONTENTS
 			If (editingContent) Then
 				'Dim e As FileEditor = New FileEditor 
+				
+				If (isFolder) Then					
+					' don't edit then
+				Else
+					' LAUNCH FILE EDITOR
+				End If
 			End If
 			
 			' CHECK FOR RENAMING FILE
 			If (renameFiles) Then
 			
-				Dim isFolder As Boolean = FileList.Item(i).Attributes().HasFlag(FileAttributes.Directory)
 			
-				If (isFolder) Then
-					
+				If (isFolder) Then					
 					' launch the renaming procedure with condition for the folders
 					renameFile(FileList.Item(i), true)
 					
@@ -92,8 +108,10 @@ Public Class Renamer
 	
 	' PROCEDURE to rename a file give (with the option of renaming a folder given)
 	' and so rename it
+	' NOTE: everything that gets here HAS PASSED THE FILE NAME CHECK and we want to rename
 	Sub renameFile(item As FileInfo, Optional isFolder As Boolean = false)
 		Dim newNameString As String
+		Dim newExtensionString As String
 		Dim newFindString As String
 		Dim newReplaceString As String
 		
@@ -103,13 +121,14 @@ Public Class Renamer
 		newReplaceString = build.EditName(MainProgram.MySettings.NewString, item)		
 		newFindString = build.EditName(MainProgram.MySettings.FindString, item)
 		
-		newNameString = item.Name()
+		' NOTE: replacements and etc. not preformed on file extension
+		newNameString = Path.GetFileNameWithoutExtension(item.Name) 
 		
 		If (MainProgram.MySettings.findMode = "partial") Then ' mode is partial
 		
 			' replace the old occurance of the string with the new
-			newNameString = newNameString.Replace(newFindString , newReplaceString)
-			
+			'***newNameString = newNameString.Replace(newFindString, newReplaceString)
+			newNameString = build.replaceAforB(newNameString, newFindString, newReplaceString)
 		Else ' if mode is all
 			
 			' replace the whole old string with the new
@@ -119,12 +138,16 @@ Public Class Renamer
 		' the builder will convert any modifications such as {{CASE_UPPER}} into the specified results (mods are applied in the order they appear)
 		newNameString = build.ModName(newNameString, item)
 		
+		' TODO: give options for replacing extensions
+		newExtensionString = item.Extension
+		
 		' RenameFile(<fileName>, <newName>)
 		Try
+			' NOTE: <newName> consists of (name & extension)
 			If isFolder Then
-				FileIO.FileSystem.RenameDirectory(item.FullName(), newNameString)
+				FileIO.FileSystem.RenameDirectory(item.FullName(), newNameString & newExtensionString)
 			Else
-				FileIO.FileSystem.RenameFile(item.FullName(), newNameString)
+				FileIO.FileSystem.RenameFile(item.FullName(), newNameString & newExtensionString)
 			End If
 		Catch ex As Exception
 			' if it breaks then it was unable to rename the directory

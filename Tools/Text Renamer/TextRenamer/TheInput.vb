@@ -1,4 +1,6 @@
-﻿'
+﻿Imports System.Reflection
+
+'
 ' Created by SharpDevelop.
 ' User: Nuser
 ' Date: 16/04/2018
@@ -8,58 +10,69 @@
 '
 Public Class TheInput
 
-	' - allow finding xth index
+	' a hash table storing all the variable settings of the program
+	Public Dim settings As HashTable = new HashTable()
 
-	Public Dim FindDirectory As String = "" ' directory to search
-	' NOTE: usually find and filter strings are the same, but they can be different
-	Public Dim FindFilter As String = ""	' the string by which results which be tested
-	Public Dim FindString As String = ""	' the string of which results will be searched and modifed
-	Public Dim FindExtension As String = ""
-	
-	Public Dim FindStringException As String = "" ' a string that if found will automatically cancel
-	Public Dim FindStringExtension As String = "" ' an extension that if found will automatically cancel
-	
-	Public Dim NewString As String = ""
-	
 	Public Sub Run()
 	
-		Console.WriteLine("### WELCOME TO THE FILE RENAMER ###" & Environment.NewLine & "  * Enter a directory to access:")
-		FindDirectory = Console.ReadLine()
+		InitializeSettings()
+	
+		Console.WriteLine("### WELCOME TO THE FILE RENAMER ###" & Environment.NewLine & "  * Enter a config file to access:")
 		
-		Console.WriteLine("  * Enter a string to find:")
-		FindFilter = Console.ReadLine()
-		
-		' TODO : UNLESS OTHERWISE SPECIFIED
-		FindString = FindFilter
-		
-		Console.WriteLine("  * Enter a string to replace it with:")
-		NewString = Console.ReadLine()
-		
-		Console.WriteLine("  * Enter a file extension (or put a * for all):")
-		FindExtension = Console.ReadLine()
+		LoadConfig(Console.ReadLine())
 	
 	End Sub
 	
-	' --- DUNGEON --- '
-	' in the deep dark dungeon we store the lesser known mainly static variables
-	' :FOR FILE NAMES: ->
-	Public Dim findMode As String = "partial" 
-	' partial -> find part and replace that part
-	' full -> find part and replace the full name
-	Public Dim findOccurance() As Integer = {0, -1} ' an array StartIndex, EndIndex (if -1 then it will go until the strings end)
-
-	Public Dim findSpecificType As Boolean = false ' (false = find all files / true = find certain extensions)
-												  
-	Public Dim findCaseSensitive As Boolean = true ' all the find file options are case sensetive, or insensitive
-	Public Dim findRegEx As Boolean = false ' if the file name must contain no wierd characters, or not
-	Public Dim findSubfolders As Boolean = true
 	
-	Public Dim total_count As Integer = 0 ' total files edited
-	Public Dim file_count As Integer = 0 ' files edited in folder
+	Sub LoadConfig(path As String)
 	
-	Public Dim advCharL As String = "{{" ' alt  ~:
-	Public Dim advCharR As String = "}}" ' alt  :~
+		' we open the file of the path
+		
+		' we run through all the lines of the file
+		
+		' if any line contains the name of a variable then we update its value
+		
+		' the update value can be found on the following line
+	End Sub
 	
-	Public Dim editReplace As Boolean = true ' whether the new text should replace text found or appended after it
+	
+	Sub InitializeSettings()
+		' --- SETTINGS --- '
+		settings.add("FindDirectory",  "") ' directory to search
+		' NOTE: usually find and filter strings are the same, but they can be different
+		settings.add("FindFilter",  "")	' the string by which results which be tested
+		settings.add("FindString",  "")	' the string of which results will be searched and modifed
+		settings.add("FindExtension",  "" )
+		
+		settings.add("FindStringException",  "") ' a string that if found will automatically cancel
+		settings.add("FindStringExtension",  "") ' an extension that if found will automatically cancel
+		
+		settings.add("NewString",  "") ' the string to replace the name with
+		
+		
+		' --- DUNGEON --- '
+		' in the deep dark dungeon we store the lesser known mainly static variables
+		' :FOR FILE NAMES: ->
+		settings.add("findMode",  "partial")
+		' partial -> find part and replace that part
+		' full -> find part and replace the full name
+		settings.add("findOccuranceStart",  1) ' an array StartIndex, EndIndex (if -1 then it will go until the strings end)
+		settings.add("findOccuranceEnd",  -1) 
+	
+		settings.add("findSpecificType",  false) ' (false = find all files / true = find certain extensions)
+													  
+		settings.add("findCaseSensitive",  true) ' all the find file options are case sensetive, or insensitive
+		settings.add("findRegEx",  false) ' if the file name must contain no wierd characters, or not
+		settings.add("findSubfolders",  true)
+		
+		settings.add("total_count",  0) ' total files edited
+		settings.add("file_count",  0) ' files edited in folder
+		
+		settings.add("advCharL",  "{{") ' alt  ~:
+		settings.add("advCharR",  "}}") ' alt  :~
+		
+		settings.add("editReplace",  true) ' whether the new text should replace text found or appended after it	
+		' ---------------- '
+	End Sub
 	
 End Class

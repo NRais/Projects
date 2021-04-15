@@ -9,7 +9,7 @@
 '
 Module MainProgram
 
-	' TODO : cool features for the future
+	' TODO :
 	' - Change file timestamp
 	' - Change file attributes (read-only, archive, hidden, system)
 	' - read files and edit their text
@@ -24,7 +24,7 @@ Module MainProgram
 	' .Name 			(gets the name of the file)
 	' 
 	
-	Public Dim MySettings As TheInput = new TheInput ' stored in a variable so we can throw it around between classes
+	Public Dim MySettings As TheInput = new TheInput ' All the Settings stored in a variable so we can throw it around between classes
 	
 	Sub Main()
 	
