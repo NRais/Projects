@@ -65,15 +65,15 @@ Public Class Builder
 	' EDIT FUNCTION: to allow user to insert aspects into their strings
 	Public Function EditName(currentString As String, item As FileInfo) As String
 		' store adv char characters in a shorter variable name
-		aL = MainProgram.MySettings.advCharL
-		aR = MainProgram.MySettings.advCharR
+		aL = CStr(MainProgram.MySettings.settings("advCharL"))
+		aR = CStr(MainProgram.MySettings.settings("advCharR"))
 		
         currentString = replaceAforB(currentString, aL &  "FILE_NAME" 				& aR, Path.GetFileNameWithoutExtension(item.Name))
         currentString = replaceAforB(currentString, aL &  "FILE_EXTENSION" 			& aR, (item.Extension).Replace(".", ""))
         currentString = replaceAforB(currentString, aL &  "DIRECTORY_NAME" 			& aR, item.Directory.Name)
         currentString = replaceAforB(currentString, aL &  "PATH_TO_FILE" 			& aR, item.DirectoryName)
-        currentString = replaceAforB(currentString, aL &  "FILE_NUMBER" 			& aR, CStr(MainProgram.MySettings.file_count))
-        currentString = replaceAforB(currentString, aL &  "TOTAL_NUMBER" 			& aR, CStr(MainProgram.MySettings.total_count))
+        currentString = replaceAforB(currentString, aL &  "FILE_NUMBER" 			& aR, CStr(MainProgram.MySettings.settings("file_count")))
+        currentString = replaceAforB(currentString, aL &  "TOTAL_NUMBER" 			& aR, CStr(MainProgram.MySettings.settings("total_count")))
         currentString = replaceAforB(currentString, aL &  "NEW_LINE" 				& aR, Environment.NewLine)
         
         currentString = replaceAforB(currentString, aL &  "DATE_YEAR" 				& aR, CStr(Date.Today.Year))
@@ -141,13 +141,13 @@ Public Class Builder
         
         	Dim startingIndex As Integer = 0
         	' the first occurance we want to replace (for example it may be the 2nd)
-        	Dim startingOccurance As Integer = MainProgram.MySettings.findOccurance(0)
+        	Dim startingOccurance As Integer = CInt(MainProgram.MySettings.settings("findOccuranceStart"))
         	' the number of occurances we want to replace (for example it may be 3)
         	' we do a +1 because it is inclusive for example 2-4 is 3 total replacements 2,3,4 (even normally though 4-2 = 2)
-        	Dim totalReplacements As Integer = 1 + MainProgram.MySettings.findOccurance(1) - MainProgram.MySettings.findOccurance(0)
+        	Dim totalReplacements As Integer = 1 + CInt(MainProgram.MySettings.settings("findOccuranceEnd")) - CInt(MainProgram.MySettings.settings("findOccuranceStart"))
         
         	' Check if all replacements are being done (if so then specify that)
-        	If (MainProgram.MySettings.findOccurance(1) = -1) Then
+        	If (CInt(MainProgram.MySettings.settings("findOccuranceEnd")) = -1) Then
         		' then instead just set it to -1 which means all
         		totalReplacements = -1
         	End If
@@ -159,11 +159,13 @@ Public Class Builder
         	' IF WE ARE RUNNING AN ADVANCED TAG WE WILL NOT DO THIS
         	If Not (findString.Contains(aL) And findString.Contains(aR)) Then
         	
-        		Console.WriteLine("* NOT ADVANCED applying filters: Start " & startingOccurance & " , Total " & totalReplacements)
+        		Console.WriteLine("* NOT ADVANCED applying filters: From " & startingOccurance & " , Total " & totalReplacements)
         	
         		' check what our starting index is going to be
         		' (for Advanced Tag we will change everything)
         		startingIndex = GetNthIndexStringFunc(theString, findString, startingOccurance)
+        		
+        		Console.WriteLine("* Starting index: " & startingIndex)
         	
         	End If
         	        	
@@ -179,8 +181,8 @@ Public Class Builder
         	' NOTE: startingIndex +1 because it starts with 1 as the first letter of the string (i think)
         	' ***** '
         	' The new string will be:
-        	' A. the string up to the Starting index [no change will be made]
-        	' B. the string after the Starting index [it will be searched for replacements]
+        	' A. the string up to the Starting index (no change will be made)
+        	' B. the string after the Starting index (it will be searched for replacements)
         	
         	' NOTE: only search and replace if we have a valid starting index
         	If Not (startingIndex = -1) Then

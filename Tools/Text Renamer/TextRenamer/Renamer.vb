@@ -30,14 +30,14 @@ Public Class Renamer
 				
 			' update the counters
 			' (the counters +1 to start at 1)
-			MainProgram.MySettings.total_count = MainProgram.MySettings.total_count + 1
-			MainProgram.MySettings.file_count = MainProgram.MySettings.file_count + 1
+			MainProgram.MySettings.settings("total_count") = CInt(MainProgram.MySettings.settings("total_count")) + 1
+			MainProgram.MySettings.settings("file_count") = CInt(MainProgram.MySettings.settings("file_count")) + 1
 			
 			' if the directory has changed reset the counter
 			' (don't check the first one)
 			If Not i = 0 Then
 				If Not FileList.Item(i).Directory.Name = FileList.Item(i-1).Directory.Name Then
-					MainProgram.MySettings.file_count = 1			
+					MainProgram.MySettings.settings("file_count") = 1			
 				End If
 			End If
 			'' -------------- '' 
@@ -118,13 +118,13 @@ Public Class Renamer
 		' call the builder
 		Dim build As Builder = new Builder
 		' the builder will convert any edits such as {INT_INDEX} into actual values
-		newReplaceString = build.EditName(MainProgram.MySettings.NewString, item)		
-		newFindString = build.EditName(MainProgram.MySettings.FindString, item)
+		newReplaceString = build.EditName(CStr(MainProgram.MySettings.settings("NewString")), item)		
+		newFindString = build.EditName(CStr(MainProgram.MySettings.settings("FindString")), item)
 		
 		' NOTE: replacements and etc. not preformed on file extension
 		newNameString = Path.GetFileNameWithoutExtension(item.Name) 
 		
-		If (MainProgram.MySettings.findMode = "partial") Then ' mode is partial
+		If (CStr(MainProgram.MySettings.settings("findMode")) = "partial") Then ' mode is partial
 		
 			' replace the old occurance of the string with the new
 			'***newNameString = newNameString.Replace(newFindString, newReplaceString)

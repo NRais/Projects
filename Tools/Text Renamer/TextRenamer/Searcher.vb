@@ -19,12 +19,12 @@ Public Class Searcher
 		FileList = new List(Of FileInfo)
 		
 		' CHECK DIRECTORY
-		If Directory.Exists(MainProgram.MySettings.FindDirectory) Then
+		If Directory.Exists(CStr(MainProgram.MySettings.settings("FindDirectory"))) Then
 		
 			' get all stuff from directory and subdirectory (all stuff that matches the Extension specified)
 			' CRITERIA 1. Extension must match
 			' (note: this will return files and folders)
-			eachFileInMydirectory = IO.Directory.GetFileSystemEntries(MainProgram.MySettings.FindDirectory, "*" & MainProgram.MySettings.FindExtension, SearchOption.AllDirectories)
+			eachFileInMydirectory = IO.Directory.GetFileSystemEntries(CStr(MainProgram.MySettings.settings("FindDirectory")), "*" & CStr(MainProgram.MySettings.settings("FindExtension")), SearchOption.AllDirectories)
 			'.Where(s => s.EndsWith(".txt", StringComparison.OrdinalIgnoreCase) || s.EndsWith(".doc", StringComparison.OrdinalIgnoreCase));
 					
 			StoreFileObjects()
@@ -92,9 +92,9 @@ Public Class Searcher
 		Dim build As Builder = new Builder
 		' the builder will convert any edits such as {INT_INDEX} into actual values
 		
-		' ## Console.WriteLine("FILTER : " & MainProgram.MySettings.FindFilter & " , ITEM : " & FileList.Item(i).Name)
+		' ## Console.WriteLine("FILTER : " & MainProgram.MySettings.settings("FindFilter & " , ITEM : " & FileList.Item(i).Name)
 		
-		Dim newReplaceString As String = build.EditName(MainProgram.MySettings.FindFilter, FileList.Item(i))
+		Dim newReplaceString As String = build.EditName(CStr(MainProgram.MySettings.settings("FindFilter")), FileList.Item(i))
 		
 		' TODO TODO CRITERIA
 		

@@ -27,12 +27,23 @@ Public Class TheInput
 	Sub LoadConfig(path As String)
 	
 		' we open the file of the path
+		FileOpen(1, path, OpenMode.Input)
 		
 		' we run through all the lines of the file
+		Do
+			' readline and see if it is a valid setting
+			Try
+				Dim config As String = LineInput(1)
+			
+				' the update value can be found on the following line
+				settings(config) = LineInput(1)
+			Catch e As Exception
+				' if not ignore the line
+			End Try
+		Loop Until EOF(1)
 		
-		' if any line contains the name of a variable then we update its value
+		FileClose(1)
 		
-		' the update value can be found on the following line
 	End Sub
 	
 	
