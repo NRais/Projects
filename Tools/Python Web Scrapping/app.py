@@ -31,7 +31,7 @@ def main():
                                
         unfiltered_list = clean_string.split('\n')
         
-        title_desc[unfiltered_list[0]] = "Summer of Tech"
+        title_desc[unfiltered_list[0]] = unfiltered_list[2].strip() if len(unfiltered_list) == 3 else ''
         
     write_csv(title_desc)
     
