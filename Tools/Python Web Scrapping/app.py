@@ -3,6 +3,7 @@ from collections import defaultdict
 
 import requests
 from bs4 import BeautifulSoup
+import csv
 
 URL = 'https://thegoodregistry.com/collections/all-charities'
 web = requests.get(URL)
@@ -32,7 +33,16 @@ def main():
         
         title_desc[unfiltered_list[0]] = "Summer of Tech"
         
-        print(unfiltered_list)
+    write_csv(title_desc)
+    
+    
+def write_csv(input: dict):
+    # create and write to a file
+    with open('result.csv', 'w', newline='') as f:
+        writer = csv.writer(f)
+        # get the data from the table we created and write rows
+        for title, desc in input.items():
+            writer.writerow([title, desc])
         
     
     
