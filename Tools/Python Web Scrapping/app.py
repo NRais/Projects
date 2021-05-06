@@ -20,8 +20,11 @@ def main():
     # ------ FOR ALL ITEMS ------
     
     for i in items:
+        # ensure i is the correct format
         encoded_string = i.encode('utf-8').decode('utf-8')
         
+        # replace all html tags and white spaces from the text
+        # PERSONALIZED parsing of text
         clean_string = encoded_string.replace('<div class="centered">', '')\
                                       .replace('<div style="padding-top: 10px;">', '')\
                                       .replace('</div>', '')\
@@ -29,8 +32,10 @@ def main():
                                       .replace('-', '')\
                                       .strip()
                                
+        # break i into pieces title, description                       
         unfiltered_list = clean_string.split('\n')
         
+        # setup the item
         title_desc[unfiltered_list[0]] = unfiltered_list[2].strip() if len(unfiltered_list) == 3 else ''
         
     write_csv(title_desc)
@@ -48,3 +53,13 @@ def write_csv(input: dict):
     
 if __name__ == '__main__':
     main()
+    
+    
+# potential object design for more complicated classes
+class User():
+    name: str
+    address: str
+    
+class Child(User):
+    child_name: str
+    
