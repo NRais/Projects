@@ -1,5 +1,5 @@
 # Projects
-Projects I have been working on recently, find executable downloads at <a href=nathansoftware.com>www.nathansoftware.com</a>. These sample projects vary from software, to cyber competitions, to expirements and practice programming in a variety of languages.
+Projects I have been working on recently, find executable downloads at <a href=www.nathansoftware.com>www.nathansoftware.com</a>. These sample projects vary from software, to cyber competitions, to expirements and practice programming in a variety of languages.
 
 ## KPMG Cyber Challenge
 <img src="https://github.com/NRais/Projects/blob/master/KPMG%20Cyber%20Challenge/Images/Clipboard01.jpg" width="300" height="80">
