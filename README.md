@@ -18,7 +18,7 @@ Projects I have been working on recently, find executable downloads at <a href="
 [![Github All Releases](https://img.shields.io/sourceforge/dt/glass-pane-image-collector.svg)]()
 
 ## Advanced Business Timer 
-[<img src="https://github.com/NRais/Projects/blob/master/Advanced%20Business%20Timer/header.jpg" width="300" height="60">](https://nathansoftware.com/wordpress/desktop-timer/)
+[<img src="https://github.com/NRais/Projects/blob/master/Advanced%20Business%20Timer/src/resources/business_timer.png" width="300" height="70">](https://nathansoftware.com/wordpress/desktop-timer/)
 
 [![Github All Releases](https://img.shields.io/sourceforge/dt/desktop-stopwatch-timer.svg)]()
 
