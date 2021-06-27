@@ -35,16 +35,18 @@
             <ImageButton
                 android:id="@+id/playButton"
                 style="@android:style/Widget.ImageButton"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="150dp"
+                android:layout_height="120dp"
                 android:layout_alignTop="@+id/textView2"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="31dp"
+                android:layout_marginBottom="-15dp"
+                android:background="@null"
                 android:contentDescription="text"
                 android:cropToPadding="true"
                 android:elevation="10dp"
                 android:scaleType="fitXY"
-                app:srcCompat="@drawable/amla_default" />
+                app:srcCompat="@drawable/play" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -59,7 +61,7 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:text="Play"
-                android:textColor="@android:color/primary_text_light"
+                android:textColor="@android:color/white"
                 android:textSize="24sp"
                 android:textStyle="italic" />
 
@@ -71,7 +73,8 @@
                 android:layout_marginTop="4dp"
                 android:ems="10"
                 android:inputType="number"
-                android:text="Input a number" />
+                android:text="Input a number"
+                android:textColor="#FFFFFF" />
 
         </RelativeLayout>
 
