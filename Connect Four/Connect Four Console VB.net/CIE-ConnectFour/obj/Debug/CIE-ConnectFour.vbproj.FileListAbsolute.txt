@@ -1,0 +1,6 @@
+C:\Users\Nuser\Documents\SharpDevelop Projects\CIE-ConnectFour\CIE-ConnectFour\obj\Debug\CIE-ConnectFour.vbprojResolveAssemblyReference.cache
+C:\Users\Nuser\Documents\SharpDevelop Projects\CIE-ConnectFour\CIE-ConnectFour\bin\Debug\CIE-ConnectFour.exe.config
+C:\Users\Nuser\Documents\SharpDevelop Projects\CIE-ConnectFour\CIE-ConnectFour\bin\Debug\CIE-ConnectFour.exe
+C:\Users\Nuser\Documents\SharpDevelop Projects\CIE-ConnectFour\CIE-ConnectFour\bin\Debug\CIE-ConnectFour.pdb
+C:\Users\Nuser\Documents\SharpDevelop Projects\CIE-ConnectFour\CIE-ConnectFour\obj\Debug\CIE-ConnectFour.exe
+C:\Users\Nuser\Documents\SharpDevelop Projects\CIE-ConnectFour\CIE-ConnectFour\obj\Debug\CIE-ConnectFour.pdb
