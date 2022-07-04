@@ -137,7 +137,7 @@
   integrity sha512-r5160ogAvGyHsal38Kux7YYtodEKOj89RGb28ht1jh3SJb08VwRwAKKJL0bGb04Zd/3r9FL3BFIc3bBidYffCA==
   dependencies:
     exec-sh "^0.3.2"
-    minimist "^1.2.0"
+    minimist "^1.2.6"
 
 "@jest/console@^24.7.1", "@jest/console@^24.9.0":
   version "24.9.0"
