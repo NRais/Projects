@@ -23,6 +23,9 @@ public class Part3 {
         }
     }
 
+	/**
+	 * Recursive method that takes a current list of fibonnaci numbers and a parameter for number of steps left to take.
+	 */
     public static List<Integer> fibonnaci(List<Integer> c, int size) {
         if (size == 0) return c; // break the recursion
 
