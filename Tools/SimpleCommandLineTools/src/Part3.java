@@ -12,9 +12,9 @@ public class Part3 {
      */
     public static String recurseFibonnaci(int size) {
         // initialize the starting fibonnaci list for it to function
-        List<Integer> startList = new ArrayList<>();
-        startList.add(0);
-        startList.add(1);
+        List<Integer> startList = new ArrayList<>(); 
+		startList.add(0); 
+		startList.add(1);
 
         if (size > 2) {
             return fibonnaci(startList, size - 2).toString();

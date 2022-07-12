@@ -6,7 +6,7 @@ public class Part2 {
      *
      * @param input - input String
      *
-     * @return - output reversed String
+     * @return - reversed String
      */
     public static String reverseString(String input) {
         if (input == null) return "";

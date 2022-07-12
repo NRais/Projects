@@ -3,9 +3,9 @@ public class Part1 {
     /**
      * Simple function to check if a given integer is prime using the modulus function.
      *
-     * A prime number is a number only divisible by itself and 1. So check if any other number can be divided with no remainder.
+     * A prime number is a number only divisible by itself and 1. So check if it can be divided by any other number with no remainder.
      *
-     * @param number - input
+     * @param number - input number
      *
      * @return - T/F
      */
