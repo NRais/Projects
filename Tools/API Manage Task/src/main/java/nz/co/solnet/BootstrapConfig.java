@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import nz.co.solnet.helper.DatabaseHelper;
 
-public class BootstrapConfig implements ServletContextListener{
+public class BootstrapConfig implements ServletContextListener {
 
 	private static final Logger logger = LogManager.getLogger(BootstrapConfig.class);
 	
@@ -18,7 +18,7 @@ public class BootstrapConfig implements ServletContextListener{
 	public void contextInitialized(ServletContextEvent sce) {
 
 		DatabaseHelper.initialiseDB();
-		logger.info("DB initialised successfully");
+		logger.info("DB initialised successfully via mvn");
 	}
 	
 	/**

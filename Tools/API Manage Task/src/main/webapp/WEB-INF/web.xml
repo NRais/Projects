@@ -1,6 +1,19 @@
 <web-app>
 	<display-name>java task api challenge</display-name>
 
+	// Create a servlet to process our web requests
+	<servlet>
+		<servlet-name>servlet1</servlet-name>
+		<servlet-class>nz.co.solnet.DBAccessServlet</servlet-class>
+	</servlet>
+
+	// Setup the mapping so the servlet can be accessed
+	<servlet-mapping>
+		<servlet-name>servlet1</servlet-name>
+		<url-pattern>/DBAccess</url-pattern>
+	</servlet-mapping>
+
+	// setup context listener
 	<listener>
 		<listener-class>nz.co.solnet.BootstrapConfig</listener-class>
 	</listener>
