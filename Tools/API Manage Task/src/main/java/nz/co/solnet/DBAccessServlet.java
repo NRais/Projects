@@ -1,5 +1,6 @@
 package nz.co.solnet;
 
+import nz.co.solnet.helper.DatabaseHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,6 +32,7 @@ public class DBAccessServlet extends HttpServlet {
             /*
              * TODO add in DB queries that are triggered by the POST method
              */
+            DatabaseHelper.queryData();
 
         }
         else {

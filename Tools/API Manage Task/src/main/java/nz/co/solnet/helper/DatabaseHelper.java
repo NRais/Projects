@@ -55,12 +55,38 @@ public class DatabaseHelper {
 				sqlSB.append(" primary key (id))");
 				statement.execute(sqlSB.toString()); // execute the statement
 
+
 				logger.info("Table created.");
 			} else {
 				logger.info("Table already exists");
 			}
+
+			// NOTE: added initial data for testing purposes
+			testInitialData(conn);
 		}
 	}
+
+	/**
+	 * Utility method to populate the database for testing purposes
+	 *
+	 * @param conn
+	 */
+	private static void testInitialData(Connection conn) throws SQLException {
+		try (Statement statement = conn.createStatement()) { // create statement for our initial table
+
+			if (doesTableExist("tasks", conn)) {
+
+				StringBuilder sqlSB = new StringBuilder();
+				sqlSB.append(addTask);
+				statement.execute(sqlSB.toString());
+
+				logger.info("Test data added");
+			} else {
+				logger.info("Table does not exist");
+			}
+		}
+	}
+
 
 	// sample SQL query templates for use by the key API tasks
 	private static String selectAll = "SELECT * FROM tasks";
@@ -69,8 +95,8 @@ public class DatabaseHelper {
 			"ORDER BY due_date ASC";
 	private static String selectId = "SELECT * FROM tasks" +
 			"WHERE id = $id_input";
-	private static String addTask = "INSERT INTO tasks (title, description, due_date, status, creation_date, id)" +
-			"VALUES ($title, $description, $due_date, $status, NOW(), $id_input)";
+	private static String addTask = "INSERT INTO tasks (title, description, due_date, status, creation_date)" +
+			"VALUES ('title', 'description', '12/7/2022', 'good', '12/5/2022')";
 	private static String deleteTask = "DELETE FROM tasks" +
 			"WHERE id = $id_input";
 	private static String updateTask = "UPDATE tasks" +
@@ -79,29 +105,72 @@ public class DatabaseHelper {
 
 
 	/**
+	 * TODO Utility method to insert into the database
+	 */
+	public static void insertData() {
+
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL)) { // note: creating DB without username/password
+
+			logger.info("TESTING DatabaseHelper Insert method");
+
+			// call fetch method TODO
+			//putData("TEST", conn);
+
+		} catch (SQLException e) {
+			logger.error("Error in inserting data into database", e);
+		}
+	}
+
+	/**
+	 * Utility method to query the database
+	 */
+	public static void queryData() {
+
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL)) { // note: creating DB without username/password
+
+			logger.info("TESTING DatabaseHelper Query method");
+
+			// call fetch method
+			fetchData("TEST", conn);
+
+		} catch (SQLException e) {
+			logger.error("Error in loading data from database", e);
+		}
+	}
+
+	/**
 	 * TODO: add functionality for API of put/pull/delete/edit/etc.
 	 */
-	public static void fetchData(String data, Connection conn) throws SQLException {
+	private static void fetchData(String data, Connection conn) throws SQLException {
 
 		try (Statement statement = conn.createStatement()) { // create query statement from our connection
 
 			StringBuilder sqlSB = new StringBuilder();
-			sqlSB.append("SELECT id, model, \"caseSensitive\", notes, etc");
-			sqlSB.append("FROM tableName");
+			sqlSB.append(selectAll);
 
 			ResultSet resultSet = statement.executeQuery(sqlSB.toString()); // execute this query with our connection
 
-			// go through the rows in the ResultSet
-			while(resultSet.next()) {
-				// ... get the various data out of this row in the database
-				int id = resultSet.getInt("id");
-				String model = resultSet.getString("model");
-				String caseSensitive = resultSet.getString("caseSensitive");
-				String notes = resultSet.getString("notes");
+			// check for data in the database
+			if (!resultSet.next()) {
 
-				String theFieldValues = String.format("Id: %s, model: %s, caseSensitive: %s, notes: %s", id, model, caseSensitive, notes);
+				logger.info("No data found in database.");
 
-				logger.info("DATA: " + theFieldValues);
+			} else {
+
+				// go through the rows in the ResultSet
+				while (resultSet.next()) {
+					// ... get the various data out of this row in the database
+					int id = resultSet.getInt("id");
+					String title = resultSet.getString("title");
+					String description = resultSet.getString("description");
+					String due_date = resultSet.getString("due_date");
+					String status = resultSet.getString("status");
+					String creation_date = resultSet.getString("creation_date");
+
+					String theFieldValues = String.format("Id: %s, title: %s, description: %s, due_date: %s, status: %s, creation_date: %s", id, title, description, due_date, status, creation_date);
+
+					logger.info("DATA: " + theFieldValues);
+				}
 			}
 
 			// don't forget to close what you've done

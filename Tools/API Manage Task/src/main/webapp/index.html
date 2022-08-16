@@ -14,7 +14,7 @@
 
 		<hr>
 
-		<!-- This is the UI for the API actions -->
+		<!-- This is an test UI for use with the API -->
 		<div id="front-end-operations">
 			<h2>Database Access</h2>
 			<form onsubmit="myFunction()">
@@ -23,6 +23,7 @@
 				<input type="submit" value="Fetch all overdue tasks"/><br><br>
 			</form>
 
+			<!-- Post to the servlet form data -->
 			<form action="/DBAccess" method="post">
 				<label for="taskid">Task ID:</label>
 				<input type="text" id="taskid" name="taskid">
@@ -30,6 +31,7 @@
 				<input type="submit" name="delete" value="Delete task by ID!"/><br><br>
 			</form>
 
+			<!-- OR post call JS functions to provide more flexibility in post method-->
 			<form onsubmit="myFunction()">
 				<h3>Add New Row</h3>
 				<label for="addrow">Enter comma separated values for title, description, due date, status and id</label>
@@ -45,6 +47,7 @@
 				<input type="submit" value="Modify Row"/><br><br>
 			</form>
 		</div>
+		<!-- ------------ -->
 
 		<hr>
 
