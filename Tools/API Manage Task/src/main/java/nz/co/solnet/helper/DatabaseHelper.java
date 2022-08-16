@@ -25,7 +25,7 @@ public class DatabaseHelper {
 	 */
 	public static void initialiseDB() {
 
-		try (Connection conn = DriverManager.getConnection(DATABASE_URL)) {
+		try (Connection conn = DriverManager.getConnection(DATABASE_URL)) { // note: creating DB without username/password
 
 			insertInitialData(conn);
 		} catch (SQLException e) {
@@ -41,7 +41,7 @@ public class DatabaseHelper {
 	 */
 	private static void insertInitialData(Connection conn) throws SQLException {
 
-		try (Statement statement = conn.createStatement()) {
+		try (Statement statement = conn.createStatement()) { // create statement for our initial table
 
 			if (!doesTableExist("tasks", conn)) {
 
@@ -53,13 +53,65 @@ public class DatabaseHelper {
 				sqlSB.append(" status varchar(10),");
 				sqlSB.append(" creation_date date not null,");
 				sqlSB.append(" primary key (id))");
-				statement.execute(sqlSB.toString());
+				statement.execute(sqlSB.toString()); // execute the statement
+
 				logger.info("Table created.");
 			} else {
 				logger.info("Table already exists");
 			}
 		}
 	}
+
+	// sample SQL query templates for use by the key API tasks
+	private static String selectAll = "SELECT * FROM tasks";
+	private static String selectOverdue = "SELECT * FROM tasks" +
+			"WHERE due_date < NOW()" +
+			"ORDER BY due_date ASC";
+	private static String selectId = "SELECT * FROM tasks" +
+			"WHERE id = $id_input";
+	private static String addTask = "INSERT INTO tasks (title, description, due_date, status, creation_date, id)" +
+			"VALUES ($title, $description, $due_date, $status, NOW(), $id_input)";
+	private static String deleteTask = "DELETE FROM tasks" +
+			"WHERE id = $id_input";
+	private static String updateTask = "UPDATE tasks" +
+			"SET column1 = value1, column2 = value2" +
+			"WHERE id = $id_input";
+
+
+	/**
+	 * TODO: add functionality for API of put/pull/delete/edit/etc.
+	 */
+	public static void fetchData(String data, Connection conn) throws SQLException {
+
+		try (Statement statement = conn.createStatement()) { // create query statement from our connection
+
+			StringBuilder sqlSB = new StringBuilder();
+			sqlSB.append("SELECT id, model, \"caseSensitive\", notes, etc");
+			sqlSB.append("FROM tableName");
+
+			ResultSet resultSet = statement.executeQuery(sqlSB.toString()); // execute this query with our connection
+
+			// go through the rows in the ResultSet
+			while(resultSet.next()) {
+				// ... get the various data out of this row in the database
+				int id = resultSet.getInt("id");
+				String model = resultSet.getString("model");
+				String caseSensitive = resultSet.getString("caseSensitive");
+				String notes = resultSet.getString("notes");
+
+				String theFieldValues = String.format("Id: %s, model: %s, caseSensitive: %s, notes: %s", id, model, caseSensitive, notes);
+
+				logger.info("DATA: " + theFieldValues);
+			}
+
+			// don't forget to close what you've done
+			resultSet.close();
+			statement.close();
+			conn.close();
+		}
+	}
+
+
 
 	/**
 	 * Checks if the table exists in the database.
@@ -73,7 +125,7 @@ public class DatabaseHelper {
 		DatabaseMetaData meta = conn.getMetaData();
 		ResultSet result = meta.getTables(null, null, tableName.toUpperCase(), null);
 
-		return result.next();
+		return result.next(); // boolean value which returns if there is a next row in the result set
 	}
 
 	/**
