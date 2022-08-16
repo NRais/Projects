@@ -55,14 +55,13 @@ public class DatabaseHelper {
 				sqlSB.append(" primary key (id))");
 				statement.execute(sqlSB.toString()); // execute the statement
 
+				// NOTE: added initial data for testing purposes
+				testInitialData(conn);
 
 				logger.info("Table created.");
 			} else {
 				logger.info("Table already exists");
 			}
-
-			// NOTE: added initial data for testing purposes
-			testInitialData(conn);
 		}
 	}
 
@@ -115,6 +114,9 @@ public class DatabaseHelper {
 
 			// call fetch method TODO
 			//putData("TEST", conn);
+
+			// NOTE: added initial data for testing purposes
+			testInitialData(conn);
 
 		} catch (SQLException e) {
 			logger.error("Error in inserting data into database", e);

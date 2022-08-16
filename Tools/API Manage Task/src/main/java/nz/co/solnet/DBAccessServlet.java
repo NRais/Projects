@@ -1,6 +1,7 @@
 package nz.co.solnet;
 
 import nz.co.solnet.helper.DatabaseHelper;
+import org.apache.derby.iapi.db.Database;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -8,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -18,13 +20,24 @@ public class DBAccessServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+        /*
+         * Currently there is limited functionality from the post parameters.
+         *
+         * I am using the different parameters as arguments by which to filter the action. This is not great for reliability
+         * or very good practice in general. Once DB queries were implemented in a robust way I would minimize the parameters
+         * being used and ensure that post commands where validated.
+         *
+         */
+        boolean fetchAll = request.getParameter("fetchall") != null;
+        boolean dropTable = request.getParameter("droptable") != null;
+        boolean addRow = request.getParameter("add") != null;
         String id = request.getParameter("taskid");
         String desc = request.getParameter("description");
 
-        logger.info("Servlet doPost method triggered with ID: " + id);
+        logger.info("Servlet doPost method triggered with ID: " + id + " " + fetchAll + " " + dropTable + " " + addRow);
 
         // validate input
-        if (id != null) {
+        if (fetchAll) {
             // perform some functionality for testing purposes
             request.getSession().setAttribute("description", desc);
             response.sendRedirect("");
@@ -35,9 +48,24 @@ public class DBAccessServlet extends HttpServlet {
             DatabaseHelper.queryData();
 
         }
+        // NOTE: this is a placeholder function used for testing
+        else if(dropTable) {
+            DatabaseHelper.cleanDatabase(); // drop
+            DatabaseHelper.initialiseDB();  // re-initialise
+            response.sendRedirect("");
+
+        }
+        // TODO expand the add row functionality to allow specification of parameters
+        else if(addRow) {
+            DatabaseHelper.insertData();
+            response.sendRedirect("");
+        }
+        // handle error cases
         else {
-            request.setAttribute("error", "Unknown user, please try again");
-            request.getRequestDispatcher("").forward(request, response);
+            response.setContentType("text/html");
+            PrintWriter out = response.getWriter();
+
+            out.print("<br>Sorry! This functionality has not been implemented yet!<br>");
         }
     }
 
